@@ -73,15 +73,14 @@ def press_search(session, config, pipeline, override)
 end
 
 def confirm_customer(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "", ""){
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer's page", "Load"){
 		session.within_frame(0) do
 			doc = session.find(:id, "main-inner")['innerHTML']
 			if (doc.scan("Customer Number").count > 0)
 				puts "Customer page opened successfully!"
 				return true
 			elsif(doc.scan("Customer Number").count <= 0)
-				puts "The Customer could not be successfully retrieved."
-				return false
+				raise "The Customer could not be successfully retrieved."
 			end
 		end
 	})
