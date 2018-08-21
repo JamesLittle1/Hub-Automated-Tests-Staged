@@ -23,5 +23,3 @@ if(!confirm_customer(session, config))
 end
 
 puts "Successfully retrieved customer!"
-# puts "press enter to exit"
-# gets

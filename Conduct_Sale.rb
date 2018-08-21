@@ -127,13 +127,11 @@ def confirm_quote (session, config)
 end
 
 def additional_data (session, config)
-	# Split these up into 5 calls to wait_for_page_to_load
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Additional Company Details", "load"){
 		session.within_frame(0) do
 			session.find(:id, "HeaderAddCompanyDetails").click
 			session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_ucMntBusiness_btnSave")
-			# If error displays
-			# if(check_for_error(session, "Company/Charity Number should contain exactly 8 alphanumeric characters (a-z, A-Z, 0-9)"))
+			# If error displays...
 			if(session.has_xpath?("//*[@id=\"ctl00_MainArea_wzrdConductSale_ucAdditionalData_ucMntBusiness_vSummary\"]"))
 				doc = session.find(:id, "ctl00_MainArea_wzrdConductSale_ucAdditionalData_ucMntBusiness_vSummary")['innerHTML']
 				r = "<li>Company/Charity Number should contain exactly 8 alphanumeric characters (a-z, A-Z, 0-9).</li>"
@@ -356,7 +354,6 @@ def preferences (session, config)
 end
 
 def verbal (session, config)
-	# Just use verbal agreement, it's easier
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract page", "load"){
 		session.within_frame(0) do
 			session.click_button("Verbal Contract")
@@ -456,6 +453,3 @@ if(!finish(session, config))
 	puts "Failed to pass Finish tab"
 	exit -1
 end
-
-puts "press enter to exit"
-gets

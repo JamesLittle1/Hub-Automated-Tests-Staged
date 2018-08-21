@@ -35,6 +35,3 @@ if(!send_quote_email(session, config))
 	puts "Failed to send quote email"
 	exit -1
 end
-
-puts "press enter to exit"
-gets

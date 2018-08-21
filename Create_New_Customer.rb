@@ -148,6 +148,3 @@ if(!new_customer_screen(session, config))
 	puts "new_customer_screen failed"
 	exit -1
 end
-
-puts "Press enter to continue"
-gets

@@ -20,7 +20,6 @@ if(!select_customer(session, config, true, "First"))
 	count = false
 end
 
-file_name = 'C:\Users\James.Little\Downloads\Capybara\Live\config.yml' # Don't need this as we have yaml_content
 array = ["\"First\"", "\"Second\"", "\"Third\"", "\"Fourth\"", "\"Fifth\"", "\"Sixth\"", "\"Seventh\"", "\"Eighth\"", "\"Ninth\"", "\"Tenth\"",
 "\"BB\"", "\"CC\"", "\"DD\"", "\"EE\"", "\"FF\"", "\"HH\"", "\"II\"", "\"JJ\"", "\"KK\"", "\"LL\"", "\"MM\"", "\"NN\"", "\"OO\"", "\"PP\"",
 "\"QQ\"", "\"RR\"", "\"SS\"", "\"TT\"", "\"UU\"", "\"VV\"", "\"WW\"", "\"XX\"", "\"YY\"", "\"ZZ\""]
@@ -30,11 +29,9 @@ if(count)
 	i = array.index(current)
 	new_content = yaml_content.gsub(current, array[array.index(current) + 1]) # will raise an error if runs out of options
 	puts "Replacing " + current + " in config.yml With " + array[array.index(current) + 1]
-	# puts "With " + array[array.index(current) + 1]
 else
 	new_content = yaml_content.gsub(current, array[0])
 	puts "Replacing " + current + " in config.yml With " + array[0]
-	# puts "With " + array[0]
 end
 
 
@@ -42,9 +39,4 @@ puts "\n\n Old file: \n" + yaml_content
 puts "\n New file: \n" + new_content
 if (new_content != "")
 	File.open(file_name, 'w') { |file| file.write(new_content) }
-	#Replace old config file with new one here
 end
-
-#puts "Press enter to exit"
-#gets
-

@@ -8,8 +8,6 @@ sql = "DELETE FROM customer.CustomerMaintenance WHERE CustId IN (SELECT CC.CustI
   WHERE FirstName = '#{config['first_name']}' AND LastName = '#{config['last_name']}' AND BusinessName = '#{config['business_name']}')"
 client = TinyTds::Client.new(:dataserver => "sql-stage02", :database => "Hub_Staging_live2")
 result = client.execute(sql)
-# results = result.each(:symbolize_keys => true, :as => :array, :cache_rows => true, :empty_sets => true) do |rowset| end
-# puts results
 
 
 sql1 = "INSERT INTO customer.CustomerMaintenance VALUES ((SELECT CC.CustId FROM address.CustomerContact CC
@@ -18,8 +16,6 @@ sql1 = "INSERT INTO customer.CustomerMaintenance VALUES ((SELECT CC.CustId FROM 
   GETDATE(), NULL, 0, NULL)"
 client = TinyTds::Client.new(:dataserver => "sql-stage02", :database => "Hub_Staging_live2")
 result = client.execute(sql1)
-# results = result.each(:symbolize_keys => true, :as => :array, :cache_rows => true, :empty_sets => true) do |rowset| end
-# puts results
 
 sql2 = "SELECT * FROM [Hub_Staging_Live2].[customer].[CustomerMaintenance] 
 WHERE CustId IN (  SELECT CC.CustId FROM address.CustomerContact CC
@@ -36,6 +32,3 @@ unless (results.nil? || results[0].nil?)
 	end
 	puts table
 end
-
-puts "Press enter to exit"
-gets
