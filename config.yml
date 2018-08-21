@@ -1,0 +1,15 @@
+loop_times: 15
+timeout_threshold: 1
+loop_times_customer_search: 30
+timeout_threshold_customer_search: 1
+authentication_load: 10
+loop_times_override: 10
+timeout_threshold_override: 1
+
+first_name: "First"
+last_name: "First"
+business_name: "First"
+address_line_1: "64a London Road"
+city: "London"
+county: "London"
+postcode: "SM4 5BE"
