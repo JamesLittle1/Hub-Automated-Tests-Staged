@@ -148,3 +148,7 @@ if(!new_customer_screen(session, config))
 	puts "new_customer_screen failed"
 	exit -1
 end
+if(!confirm_customer(session, config))
+	puts "Could not confirm customer"
+	exit -1
+end
