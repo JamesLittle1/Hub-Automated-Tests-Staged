@@ -15,7 +15,7 @@ if(!search_customers(session, config))
 	puts "Search_customers failed"
 	exit -1
 end
-if(!select_customer(session, config, true, "First"))
+if(!select_customer(session, config, "First"))
 	puts "No First user, starting from the beginning again!"
 	count = false
 end
