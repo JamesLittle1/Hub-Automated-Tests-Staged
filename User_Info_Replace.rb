@@ -22,7 +22,8 @@ end
 
 file_name = 'C:\Users\James.Little\Downloads\Capybara\Live\config.yml' # Don't need this as we have yaml_content
 array = ["\"First\"", "\"Second\"", "\"Third\"", "\"Fourth\"", "\"Fifth\"", "\"Sixth\"", "\"Seventh\"", "\"Eighth\"", "\"Ninth\"", "\"Tenth\"",
-"\"AA\"", "\"BB\"", "\"CC\"", "\"DD\"", "\"EE\"", "\"FF\"", "\"GG\"", "\"HH\"", "\"II\"", "\"JJ\"", "\"KK\"", "\"LL\""]
+"\"BB\"", "\"CC\"", "\"DD\"", "\"EE\"", "\"FF\"", "\"HH\"", "\"II\"", "\"JJ\"", "\"KK\"", "\"LL\"", "\"MM\"", "\"NN\"", "\"OO\"", "\"PP\"",
+"\"QQ\"", "\"RR\"", "\"SS\"", "\"TT\"", "\"UU\"", "\"VV\"", "\"WW\"", "\"XX\"", "\"YY\"", "\"ZZ\""]
 yaml_content = File.read(file_name)
 current = yaml_content.scan(/first_name: \".*\"/)[0][12..-1]
 if(count)
