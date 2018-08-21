@@ -19,7 +19,7 @@ def quote(session, config, input1="", input2="")
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptBusiness_ctl00_rptPremises_ctl00_ucQuotingPremises_imbPremisesSelect").click
 			end
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucCompanyCreditScore_txtCreditScore_text").native.clear
-			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucCompanyCreditScore_txtCreditScore_text").send_keys("0")
+			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucCompanyCreditScore_txtCreditScore_text").send_keys("100")
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_StartNavigationTemplateContainerID_StepNextButton").click
 		end
 	})
