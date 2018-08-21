@@ -99,13 +99,13 @@ def select_quote (session, config)
 	return true
 end
 
-def confirm_quote (session, config)
+def confirm_quote (session, config, input1="", input2="")
 	# Do Major Business bit if they have MB access
 	
 	puts "Giving the website #{config['authentication_load']} seconds to load MB authentication pop-up"
 	sleep(config['authentication_load'])
 	begin
-		authenticate(session.driver.browser, ARGV[0], ARGV[1])
+		authenticate(session.driver.browser, input1, input2)
 		session.within_frame(0) do
 			session.all('input[type="checkbox"]').each{|box| box.set(true)}
 			session.find(:xpath, "//div[@id='ember429']/div/div[2]/button").click
@@ -429,7 +429,7 @@ if(!select_quote(session, config))
 	puts "Failed pass Sale Quote tab"
 	exit -1
 end
-if(!confirm_quote(session, config))
+if(!confirm_quote(session, config, ARGV[0], ARGV[1]))
 	puts "Failed to pass Confirm Quote tab"
 	exit -1
 end
