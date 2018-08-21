@@ -105,6 +105,7 @@ def confirm_quote (session, config, input1="", input2="")
 	puts "Giving the website #{config['authentication_load']} seconds to load MB authentication pop-up"
 	sleep(config['authentication_load'])
 	begin
+	puts input1 + input2
 		authenticate(session.driver.browser, input1, input2)
 		session.within_frame(0) do
 			session.all('input[type="checkbox"]').each{|box| box.set(true)}
