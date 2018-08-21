@@ -7,7 +7,7 @@ require './wait_for_page_to_load.rb'
 require './Mic-stage_Quote.rb'
 config = YAML.load_file("./config.yml")
 
-session = Capybara::Session.new :selenium_firefox
+session = Capybara::Session.new :selenium#_firefox #Put back into final build
 login(session, ARGV[0], ARGV[1])
 
 if(!search_customers(session, config))
@@ -105,7 +105,6 @@ def confirm_quote (session, config, input1="", input2="")
 	puts "Giving the website #{config['authentication_load']} seconds to load MB authentication pop-up"
 	sleep(config['authentication_load'])
 	begin
-	puts input1 + input2
 		authenticate(session.driver.browser, input1, input2)
 		session.within_frame(0) do
 			session.all('input[type="checkbox"]').each{|box| box.set(true)}
