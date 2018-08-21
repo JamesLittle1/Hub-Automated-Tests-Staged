@@ -9,7 +9,7 @@ def quote_load(session, config)
 	return true
 end
 
-def quote(session, config)
+def quote(session, config, input1="", input2="")
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote", "process"){
 		session.within_frame(0) do
 			begin
@@ -32,7 +32,7 @@ def quote(session, config)
 		searching = true
 		while(searching) do
 			puts "create_new = #{create_new}"
-			searching = search_for_electricity_meter(session, config, create_new)
+			searching = search_for_electricity_meter(session, config, create_new, input1, input2)
 		end
 	})
 		return false
@@ -109,7 +109,7 @@ def quote(session, config)
 	return true
 end
 
-def search_for_electricity_meter (session, config, create_new)
+def search_for_electricity_meter (session, config, create_new, input1="", input2="")
 	# try clicking Get Prices first, then check for errors!
 	session.within_frame(0) do
 		#remove puts after testing
@@ -189,7 +189,7 @@ def search_for_electricity_meter (session, config, create_new)
 			puts "Giving the website #{config['authentication_load']} seconds to load, just to be safe"
 			sleep(config['authentication_load'])
 			puts "Authenticating"
-			authenticate(session.driver.browser)
+			authenticate(session.driver.browser, input1, input2)
 			puts "Successfully switched to error, returning false"
 			return false
 		rescue Selenium::WebDriver::Error::NoSuchAlertError => e

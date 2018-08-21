@@ -36,7 +36,7 @@ end
 
 def new_customer_screen(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer authentication", "load"){
-		authenticate(session.driver.browser)
+		authenticate(session.driver.browser, ARGV[0], ARGV[1])
 	})
 		return false
 	end

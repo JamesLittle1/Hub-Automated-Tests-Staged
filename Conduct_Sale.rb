@@ -56,7 +56,7 @@ def check_for_records (session, config)
 			puts "Quote page failed to load"
 			exit -1
 		end
-		if(!quote(session, config))
+		if(!quote(session, config, ARGV[0], ARGV[1]))
 			puts "Quote failed"
 			exit -1
 		end
@@ -105,7 +105,7 @@ def confirm_quote (session, config)
 	puts "Giving the website #{config['authentication_load']} seconds to load MB authentication pop-up"
 	sleep(config['authentication_load'])
 	begin
-		authenticate(session.driver.browser)
+		authenticate(session.driver.browser, ARGV[0], ARGV[1])
 		session.within_frame(0) do
 			session.all('input[type="checkbox"]').each{|box| box.set(true)}
 			session.find(:xpath, "//div[@id='ember429']/div/div[2]/button").click

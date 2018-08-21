@@ -23,7 +23,7 @@ if(!quote_load(session, config))
 	puts "Quote page failed to load"
 	exit -1
 end
-if(!quote(session, config))
+if(!quote(session, config, ARGV[0], ARGV[1]))
 	puts "Quote failed"
 	exit -1
 end
