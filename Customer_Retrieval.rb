@@ -3,6 +3,7 @@ require './Selenium_Firefox.rb'
 require 'yaml'
 require './Mic-stage_Login.rb'
 require './Mic-stage_Customer_Retrieval.rb'
+require './wait_for_page_to_load.rb'
 config = YAML.load_file("./config.yml")
 
 session = Capybara::Session.new :selenium_firefox
@@ -14,6 +15,7 @@ if(!search_customers(session, config))
 	exit -1
 end
 if(!select_customer(session, config))
+#if(!select_customer(session, config, true))
 	puts "select_customer failed"
 	exit -1
 end

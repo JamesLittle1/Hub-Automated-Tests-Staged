@@ -1,5 +1,3 @@
-require './wait_for_page_to_load.rb'
-
 # Method to search for all customers
 def search_customers(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Homepage", "load"){
@@ -16,7 +14,6 @@ def select_customer(session, config, pipeline=false, override="")
 		loop_times = 'loop_times_customer_search'
 		timeout_threshold = 'timeout_threshold_customer_search'
 	else
-		#alternative - REMEMBER TO ADD THESE VALUES TO CONFIG!!!
 		loop_times = 'loop_times_override'
 		timeout_threshold = 'timeout_threshold_override'
 	end
@@ -73,7 +70,7 @@ def press_search(session, config, pipeline, override)
 end
 
 def confirm_customer(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer's page", "Load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer's page", "Load"){
 		session.within_frame(0) do
 			doc = session.find(:id, "main-inner")['innerHTML']
 			if (doc.scan("Customer Number").count > 0)
