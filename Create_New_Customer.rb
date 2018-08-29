@@ -15,7 +15,6 @@ if(!search_customers(session, config))
 	exit -1
 end
 
-#Create New Customer Here
 def open_new_customer_screen(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer page", "load"){
 		session.within_frame(0) do
@@ -50,7 +49,7 @@ def new_customer_screen(session, config)
 				session.find(:id, "BusinessName").send_keys(config['business_name'])
 				session.find(:id, "PostCode").send_keys(config['postcode'])
 				session.find(:id, "IsCOT").send_keys("\ue015\ue015")
-				session.find(:id, "Landline").send_keys("07878787878")
+				session.find(:id, "Mobile").send_keys("07878787878")
 				session.click_button("search-button")
 			end
 		end
@@ -123,7 +122,7 @@ def use_existing_business(session, config)
 	session.within_frame(0) do
 		session.within_frame(0) do
 			session.first('td', text: "Perfect Match").click
-			session.click_button("Use Existing Business")
+			session.click_button("use-existingbusiness-button")
 		end
 	end
 	
@@ -140,6 +139,30 @@ def use_existing_business(session, config)
 	return true
 end
 
+def if_quote_then_back(session, config)
+	ret = false
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer page", "open"){
+		session.within_frame(0) do
+			sleep(4) #Sleep so that page loads before we search
+			if(session.html.scan("Please select the first premises the customer wants to quote against").count > 0)
+				ret = true
+			end
+		end
+	})
+		return false
+	end
+	if(ret)
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.within_frame(0) do
+				session.find(:id, "ctl00_MainArea_wzrdQuoting_StartNavigationTemplateContainerID_btnCancel").click
+			end
+		})
+			return false
+		end
+	end
+	return true
+end
+
 if(!open_new_customer_screen(session, config))
 	puts "open_new_customer_screen failed"
 	exit -1
@@ -147,7 +170,11 @@ end
 if(!new_customer_screen(session, config))
 	puts "new_customer_screen failed"
 	exit -1
-end
+end 
+if(!if_quote_then_back(session, config))
+	puts "if_quote_then_back failed"
+	exit -1
+end 
 if(!confirm_customer(session, config))
 	puts "Could not confirm customer"
 	exit -1
