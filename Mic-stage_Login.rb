@@ -6,7 +6,7 @@ def login(session, input1="", input2="", live=false)
 	end
 	authenticate(session.driver.browser, input1, input2)
 	# check that we have logged on correctly
-	sleep(1)
+	sleep(3)
 	if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
 		puts "Successfully logged onto Hub!"
 	else
