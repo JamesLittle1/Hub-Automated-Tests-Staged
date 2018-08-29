@@ -3,6 +3,7 @@ require './Selenium_Firefox.rb'
 require 'yaml'
 require './Mic-stage_Login.rb'
 require './Mic-stage_Customer_Retrieval.rb'
+require './wait_for_page_to_load.rb'
 file_name = "./config.yml"
 config = YAML.load_file(file_name)
 
