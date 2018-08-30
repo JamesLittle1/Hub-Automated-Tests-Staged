@@ -20,3 +20,19 @@ def authenticate(browser, input1="", input2="") # Now have to send in usename an
 	browser.switch_to.alert.send_keys("\ue004"+input2)
 	browser.switch_to.alert.accept()
 end
+
+def open_search_customer_frame(session, input1="", input2="", live=false)
+	if(live)
+		session.visit("http://micapp1/Webforms/CustomerManagement/frmCustomerActionSelect.aspx")
+	else
+		session.visit("http://mic-stage02/Webforms/CustomerManagement/frmCustomerActionSelect.aspx")
+	end
+	authenticate(session.driver.browser, input1, input2)
+	sleep(3)
+	if(session.has_css?("#ctl00_MainArea_lblTitle"))
+		puts "Successfully logged onto Hub!"
+	else
+		puts "Failed to log onto Hub"
+		exit -1
+	end
+end
