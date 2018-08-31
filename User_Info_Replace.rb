@@ -11,7 +11,7 @@ count = true
 
 session = Capybara::Session.new :selenium_firefox
 
-login(session, ARGV[0], ARGV[1])
+login(session, config, ARGV[0], ARGV[1])
 if(!search_customers(session, config))
 	puts "Search_customers failed"
 	exit -1

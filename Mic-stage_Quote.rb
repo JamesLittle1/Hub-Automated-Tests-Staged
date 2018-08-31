@@ -1,8 +1,8 @@
 def quote_load(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote page", "load"){
-		session.within_frame(0) do
+		#session.within_frame(0) do
 			session.find(:id, "ctl00_MainArea_repActionControls_ctl01_lbPageAction").click
-		end
+		#end
 	})
 		return false
 	end
@@ -11,7 +11,7 @@ end
 
 def quote(session, config, input1="", input2="", prod)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote", "process"){
-		session.within_frame(0) do
+		#session.within_frame(0) do
 			begin
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptBusiness_ctl00_rptPremises_ctl00_ucQuotingPremises_imbPremisesSelect").click
 			rescue
@@ -21,7 +21,7 @@ def quote(session, config, input1="", input2="", prod)
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucCompanyCreditScore_txtCreditScore_text").native.clear
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucCompanyCreditScore_txtCreditScore_text").send_keys("100")
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_StartNavigationTemplateContainerID_StepNextButton").click
-		end
+		#end
 	})
 		return false
 	end
@@ -96,7 +96,7 @@ end
 
 # Methods from above
 def search_for_meter (session, config, create_new, input1="", input2="", prod=Product::Electricity)
-	session.within_frame(0) do
+	#session.within_frame(0) do
 		puts "Entered search_for_meter"
 		
 		if(create_new[0])
@@ -132,13 +132,11 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod=Pr
 		case prod
 			when Product::Electricity
 				if(session.find(:id, "ctl00_MainArea_wzrdQuoting_pnlElectric")['innerHTML'].scan("ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlElecMeter").count ==0)
-					puts "Create new"
 					create_new[0] = true
 					return true
 				end
 			when Product::Gas
 				if(session.find(:id, "ctl00_MainArea_wzrdQuoting_pnlGas")['innerHTML'].scan("ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlGasMeter").count ==0)
-					puts "Create new"
 					create_new[0] = true
 					return true
 				end
@@ -245,7 +243,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod=Pr
 			end
 			return true
 		end
-	end
+	#end
 end
 
 def moved_into_premises(session)
@@ -256,7 +254,7 @@ def moved_into_premises(session)
 end
 
 def search_for_landline(session, config, create_new)
-	session.within_frame(0) do
+	#session.within_frame(0) do
 		if(create_new[0])
 			session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 			create_new[0] = false
@@ -267,7 +265,6 @@ def search_for_landline(session, config, create_new)
 		begin
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_rbtNewConnection")
 		rescue
-			puts "Create new"
 			create_new[0] = true
 			return true
 		end
@@ -292,14 +289,14 @@ def search_for_landline(session, config, create_new)
 		
 		# Scan for errors:
 		doc = session.html
-		telco_fields = ""
+		# telco_fields = ""
 		
 		# Find if old or new telco fields
-		if(doc.scan("ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numEstimatedNewMonthlyCallSpend_text").count > 0)
-			telco_fields = "old"
-		elsif(doc.scan("ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalCurrentMonthlySpend_text").count > 0)
-			telco_fields = "new"
-		end
+		# if(doc.scan("ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numEstimatedNewMonthlyCallSpend_text").count > 0)
+			# telco_fields = "old"
+		# elsif(doc.scan("ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalCurrentMonthlySpend_text").count > 0)
+			# telco_fields = "new"
+		# end
 		
 		r = Regexp.new(/<li>Channel is mandatory.<\/li>/)
 		r1 = Regexp.new(/<li>Current Supplier is mandatory.<\/li>/)
@@ -307,26 +304,26 @@ def search_for_landline(session, config, create_new)
 		r3 = Regexp.new(/<li>Chosen Tariff is mandatory.<\/li>/)
 		r4 = Regexp.new(/<li>Contract Period is mandatory.<\/li>/)
 		r5 = Regexp.new(/<li>Tier is mandatory.<\/li>/)
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old:
 			r6 = Regexp.new(/<li>Estimated New Monthly Call Spend is mandatory<\/li>/)
 			r7 = Regexp.new(/<li>Either Annual Saving or Contract Saving is mandatory<\/li>/)
-		elsif(telco_fields == "new")
-			r6 = Regexp.new(/<li>Total Current Monthly Spend is mandatory<\/li>/)
-			r7 = Regexp.new(/<li>Either Total New Monthly Spend or Total Monthly Saving is mandatory<\/li>/)
-		end
+		#elsif(telco_fields == "new") # Only needed for new
+			r8 = Regexp.new(/<li>Total Current Monthly Spend is mandatory<\/li>/)
+			r9 = Regexp.new(/<li>Either Total New Monthly Spend or Total Monthly Saving is mandatory<\/li>/)
+		#end
 		need_channel = doc.scan(r).count > 0
 		need_current_supplier = doc.scan(r1).count > 0
 		need_chosen_supplier = doc.scan(r2).count > 0
 		need_chosen_tariff = doc.scan(r3).count > 0
 		need_contract_period = doc.scan(r4).count > 0
 		need_tier = doc.scan(r5).count > 0
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old
 			need_estimated_new_monthly_call_spend = doc.scan(r6).count > 0
 			need_annual_saving_or_contract_saving = doc.scan(r7).count > 0
-		elsif(telco_fields == "new")
-			need_total_current_monthly_spend = doc.scan(r6).count > 0
-			need_total_new_monthly_spend_or_total_monthly_saving = doc.scan(r7).count > 0
-		end
+		#elsif(telco_fields == "new") # Only needed for new
+			need_total_current_monthly_spend = doc.scan(r8).count > 0
+			need_total_new_monthly_spend_or_total_monthly_saving = doc.scan(r9).count > 0
+		#end
 		
 		if(!need_channel && !need_current_supplier && !need_chosen_supplier && !need_chosen_tariff && !need_contract_period && !need_tier && ((!need_estimated_new_monthly_call_spend && !need_annual_saving_or_contract_saving) || (!need_total_current_monthly_spend && !need_total_new_monthly_spend_or_total_monthly_saving)))# Long-ass if statement to check no errors
 			puts "No errors - assume Landline saved correctly!"
@@ -357,23 +354,23 @@ def search_for_landline(session, config, create_new)
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_cmbTier_Input").send_keys("\ue015")
 		end
 		
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old
 			if(need_estimated_new_monthly_call_spend)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numEstimatedNewMonthlyCallSpend_text").send_keys("20")
 			end
-			if(need_total_current_monthly_spend)
-				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalCurrentMonthlySpend_text").send_keys("30")
-			end
-		elsif(telco_fields == "new")
 			if(need_annual_saving_or_contract_saving)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numAnnualSaving_text").send_keys("10")
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numContractSaving_text").send_keys("10")
+			end
+		#elsif(telco_fields == "new") # Only needed for new
+			if(need_total_current_monthly_spend)
+				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalCurrentMonthlySpend_text").send_keys("30")
 			end
 			if(need_total_new_monthly_spend_or_total_monthly_saving)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalNewMonthlySpend_text").send_keys("20")
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalMonthlySaving_text").send_keys("10")
 			end
-		end
+		#end
 		# if(need_estimated_new_monthly_call_spend)
 			# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numEstimatedNewMonthlyCallSpend_text").send_keys("20")
 		# elsif(need_total_current_monthly_spend)
@@ -387,11 +384,11 @@ def search_for_landline(session, config, create_new)
 			# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalMonthlySaving_text").send_keys("10")
 		# end
 		return true
-	end
+	#end
 end
 
 def search_for_broadband(session, config, create_new)
-	session.within_frame(0) do
+	#session.within_frame(0) do
 		if(create_new[0])
 			session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 			create_new[0] = false
@@ -402,13 +399,12 @@ def search_for_broadband(session, config, create_new)
 		begin
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_rptBroadband_ctl00_ucQuotingBroadband_chkNewConnection")
 		rescue
-			puts "Create new"
 			create_new[0] = true
 			return true
 		end
 		
 		if(!session.find(:id, "ctl00_MainArea_wzrdQuoting_rptBroadband_ctl00_ucQuotingBroadband_chkNewConnection").checked?)
-			session.choose("ctl00_MainArea_wzrdQuoting_rptBroadband_ctl00_ucQuotingBroadband_chkNewConnection")
+			session.check("ctl00_MainArea_wzrdQuoting_rptBroadband_ctl00_ucQuotingBroadband_chkNewConnection")
 			sleep(4)
 		end
 		
@@ -467,11 +463,11 @@ def search_for_broadband(session, config, create_new)
 		# Also filling in Current Supplier
 		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptBroadband_ctl00_ucQuotingBroadband_cmbCurrentSupplier_Input").send_keys("\ue015")
 		return true
-	end
+	#end
 end
 
 def search_for_mobile(session, config, create_new)
-	session.within_frame(0) do
+	#session.within_frame(0) do
 		if(create_new[0])
 			session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 			create_new[0] = false
@@ -482,7 +478,6 @@ def search_for_mobile(session, config, create_new)
 		begin
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_rbtNewConnection")
 		rescue
-			puts "Create new"
 			create_new[0] = true
 			return true
 		end
@@ -502,14 +497,14 @@ def search_for_mobile(session, config, create_new)
 		
 		# Scan for errors:
 		doc = session.html
-		telco_fields = ""
+		#telco_fields = ""
 		
 		# Find if old or new telco fields
-		if(doc.scan("ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numEstimatedNewMonthlyCallSpend_text").count > 0)
-			telco_fields = "old"
-		elsif(doc.scan("ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").count > 0)
-			telco_fields = "new"
-		end
+		# if(doc.scan("ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numEstimatedNewMonthlyCallSpend_text").count > 0)
+			# telco_fields = "old"
+		# elsif(doc.scan("ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").count > 0)
+			# telco_fields = "new"
+		# end
 		
 		r = Regexp.new(/<li>Product Type is mandatory.<\/li>/)
 		r1 = Regexp.new(/<li>Current Supplier is mandatory.<\/li>/)
@@ -518,13 +513,13 @@ def search_for_mobile(session, config, create_new)
 		r4 = Regexp.new(/<li>Device is mandatory.<\/li>/)
 		r5 = Regexp.new(/<li>Proposed Start Date is mandatory.<\/li>/)
 		r8 = Regexp.new(/<li>Yield is mandatory<\/li>/)
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old
 			r6 = Regexp.new(/<li>Estimated New Monthly Call Spend is mandatory<\/li>/)
 			r7 = Regexp.new(/<li>Either Annual Saving or Contract Saving is mandatory<\/li>/)
-		elsif(telco_fields == "new")
-			r6 = Regexp.new(/<li>Total Current Monthly Spend is mandatory<\/li>/)
-			r7 = Regexp.new(/<li>Either Total New Monthly Spend or Total Monthly Saving is mandatory<\/li>/)
-		end
+		#elsif(telco_fields == "new") # Only needed for new
+			r9 = Regexp.new(/<li>Total Current Monthly Spend is mandatory<\/li>/)
+			r10 = Regexp.new(/<li>Either Total New Monthly Spend or Total Monthly Saving is mandatory<\/li>/)
+		#end
 		need_product_type = doc.scan(r).count > 0
 		need_current_supplier = doc.scan(r1).count > 0
 		need_chosen_supplier = doc.scan(r2).count > 0
@@ -533,13 +528,13 @@ def search_for_mobile(session, config, create_new)
 		need_proposed_start_date = doc.scan(r5).count > 0
 		need_yield = doc.scan(r8).count > 0
 		
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old
 			need_estimated_new_monthly_call_spend = doc.scan(r6).count > 0
 			need_annual_saving_or_contract_saving = doc.scan(r7).count > 0
-		elsif(telco_fields == "new")
-			need_total_current_monthly_spend = doc.scan(r6).count > 0
-			need_total_new_monthly_spend_or_total_monthly_saving = doc.scan(r7).count > 0
-		end
+		#elsif(telco_fields == "new") # Only needed for new
+			need_total_current_monthly_spend = doc.scan(r9).count > 0
+			need_total_new_monthly_spend_or_total_monthly_saving = doc.scan(r10).count > 0
+		#end
 		
 		if(!need_product_type && !need_current_supplier && !need_chosen_supplier && !need_chosen_tariff && !need_device && !need_proposed_start_date && !need_yield && ((!need_estimated_new_monthly_call_spend && !need_annual_saving_or_contract_saving) || (!need_total_current_monthly_spend && !need_total_new_monthly_spend_or_total_monthly_saving)))# Long-ass if statement to check no errors
 			puts "No errors - assume Mobile saved correctly!"
@@ -576,14 +571,14 @@ def search_for_mobile(session, config, create_new)
 		if(need_yield)
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numYield_text").send_keys("100")
 		end
-		if(telco_fields == "old")
+		#if(telco_fields == "old") # Only needed for old
 			if(need_estimated_new_monthly_call_spend)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numEstimatedNewMonthlyCallSpend_text").send_keys("20")
 			end
 			if(need_annual_saving_or_contract_saving)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").send_keys("30")
 			end
-		elsif(telco_fields == "new")
+		#elsif(telco_fields == "new") # Only needed for new
 			if(need_total_current_monthly_spend)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").send_keys("10")
 			end
@@ -591,7 +586,7 @@ def search_for_mobile(session, config, create_new)
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalNewMonthlySpend_text").send_keys("20")
 				session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalMonthlySaving_text").send_keys("10")
 			end
-		end
+		#end
 		# if(need_estimated_new_monthly_call_spend)
 			# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numEstimatedNewMonthlyCallSpend_text").send_keys("20")
 		# elsif(need_total_current_monthly_spend)
@@ -605,5 +600,5 @@ def search_for_mobile(session, config, create_new)
 			# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptLandline_ctl00_ucQuotingLandline_numTotalMonthlySaving_text").send_keys("10")
 		# end
 		return true
-	end
+	#end
 end

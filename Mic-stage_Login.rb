@@ -1,4 +1,4 @@
-def login(session, input1="", input2="", live=false)
+def login(session, config, input1="", input2="", live=false)
 	if(live)
 		session.visit("http://micapp1")
 	else
@@ -6,13 +6,23 @@ def login(session, input1="", input2="", live=false)
 	end
 	authenticate(session.driver.browser, input1, input2)
 	# check that we have logged on correctly
-	sleep(3)
-	if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
-		puts "Successfully logged onto Hub!"
-	else
-		puts "Failed to log onto Hub"
-		exit -1
+	for i in 0..config['authentication_load']
+		if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
+			puts "Successfully logged onto Hub!"
+			exit 0
+		else
+			sleep(1)
+		end
 	end
+	puts "Failed to log onto Hub"
+	exit -1
+	# sleep(3)
+	# if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
+		# puts "Successfully logged onto Hub!"
+	# else
+		# puts "Failed to log onto Hub"
+		# exit -1
+	# end
 end
 
 def authenticate(browser, input1="", input2="") # Now have to send in usename and password every time we authenticate
@@ -21,18 +31,21 @@ def authenticate(browser, input1="", input2="") # Now have to send in usename an
 	browser.switch_to.alert.accept()
 end
 
-def open_search_customer_frame(session, input1="", input2="", live=false)
+def open_search_customer_frame(session, config, input1="", input2="", live=false)
 	if(live)
 		session.visit("http://micapp1/Webforms/CustomerManagement/frmCustomerActionSelect.aspx")
 	else
 		session.visit("http://mic-stage02/Webforms/CustomerManagement/frmCustomerActionSelect.aspx")
 	end
 	authenticate(session.driver.browser, input1, input2)
-	sleep(3)
-	if(session.has_css?("#ctl00_MainArea_lblTitle"))
-		puts "Successfully logged onto Hub!"
-	else
-		puts "Failed to log onto Hub"
-		exit -1
+	for i in 0..config['authentication_load']
+		if(session.has_css?("#ctl00_MainArea_lblTitle"))
+			puts "Successfully logged onto Hub!"
+			exit 0
+		else
+			sleep(1)
+		end
 	end
+	puts "Failed to log onto Hub"
+	exit -1
 end

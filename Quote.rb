@@ -10,13 +10,9 @@ config = YAML.load_file("./config.yml")
 
 session = Capybara::Session.new :selenium_firefox
 
-login(session, ARGV[0], ARGV[1])
+open_search_customer_frame(session, config, ARGV[0], ARGV[1])
 
-if(!search_customers(session, config))
-	puts "Search_customers failed"
-	exit -1
-end
-if(!select_customer(session, config, true))
+if(!select_customer(session, config, true, true))
 	puts "select_customer failed"
 	exit -1
 end
@@ -39,15 +35,15 @@ if(ARGV[2] == Product::Electricity || ARGV[2] == Product::Gas)
 	end
 else
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Screen", "load"){
-		session.within_frame(0) do
+		#session.within_frame(0) do
 			session.click_button("Exit")
-		end
+		#end
 	})
 		puts "Failed to finish #{ARGV[2][9..-1]} quote"
 	end
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirm quote", "complete"){
 		doc = ""
-		session.within_frame(0) do
+		#session.within_frame(0) do
 			doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
 			if(doc.scan(/#{ARGV[2][9..-1]}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
 				puts "Successfully quoted #{ARGV[2][9..-1]}!"
@@ -55,7 +51,7 @@ else
 				puts "#{ARGV[2][9..-1]} quote not showing up!"
 				exit -1
 			end
-		end
+		#end
 	})
 		puts "Failed to confirm #{ARGV[2][9..-1]} quote"
 		return false
