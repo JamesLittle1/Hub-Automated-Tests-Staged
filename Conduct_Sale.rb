@@ -10,7 +10,10 @@ require './Product'
 config = YAML.load_file("./config.yml")
 
 session = Capybara::Session.new :selenium_firefox
-open_search_customer_frame(session, config, ARGV[0], ARGV[1])
+if(!open_search_customer_frame(session, config, ARGV[0], ARGV[1]))
+	puts "Failed to log onto Hub"
+	exit -1
+end
 
 if(!select_customer(session, config, true, true))
 	puts "select_customer failed"

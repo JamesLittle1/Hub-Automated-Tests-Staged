@@ -11,7 +11,10 @@ count = true
 
 session = Capybara::Session.new :selenium_firefox
 
-login(session, config, ARGV[0], ARGV[1])
+if(!login(session, config, ARGV[0], ARGV[1]))
+	puts "Failed to log onto Hub"
+	exit -1
+end
 if(!search_customers(session, config))
 	puts "Search_customers failed"
 	exit -1

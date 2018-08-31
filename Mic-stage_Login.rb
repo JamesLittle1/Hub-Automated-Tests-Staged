@@ -9,13 +9,12 @@ def login(session, config, input1="", input2="", live=false)
 	for i in 0..config['authentication_load']
 		if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
 			puts "Successfully logged onto Hub!"
-			exit 0
+			return true
 		else
 			sleep(1)
 		end
 	end
-	puts "Failed to log onto Hub"
-	exit -1
+	return false
 	# sleep(3)
 	# if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
 		# puts "Successfully logged onto Hub!"
@@ -41,11 +40,10 @@ def open_search_customer_frame(session, config, input1="", input2="", live=false
 	for i in 0..config['authentication_load']
 		if(session.has_css?("#ctl00_MainArea_lblTitle"))
 			puts "Successfully logged onto Hub!"
-			exit 0
+			return true
 		else
 			sleep(1)
 		end
 	end
-	puts "Failed to log onto Hub"
-	exit -1
+	return false
 end
