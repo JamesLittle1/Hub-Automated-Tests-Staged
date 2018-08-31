@@ -86,7 +86,7 @@ def select_quote (session, config, prod="Product::Electricity")
 				puts "Could not find a Quote for #{prod[9..-1]}."
 				exit -1
 			end
-			puts "id = #{id}"
+			#puts "id = #{id}"
 			session.check(id)
 			# session.check("ctl00_MainArea_wzrdConductSale_rptBusiness_ctl00_ucBusinessQuotes_grdQuotes_ctl00_ctl07_cbSelect")
 			session.click_button("ctl00_MainArea_wzrdConductSale_StartNavigationTemplateContainerID_StepNextButton")
@@ -298,8 +298,8 @@ def summary (session, config)
 					id = cltn[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 					if(!id.nil? && !id.empty?)
 						wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Landline Telephone Number tick", "fill in"){
-							puts "id = #{id[4..-2]}"
-							puts "start = #{id[4..-11]}"
+							#puts "id = #{id[4..-2]}"
+							#puts "start = #{id[4..-11]}"
 							session.click_button(id[4..-2])
 							session.find(:id, id[4..-11] + "txtLandline_text").native.clear
 							session.find(:id, id[4..-11] + "txtLandline_text").send_keys(config['landline'])
@@ -315,8 +315,8 @@ def summary (session, config)
 					id = dify[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 					if(!id.nil? && !id.empty?)
 						wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "DIFY tick", "fill in"){
-							puts "id = #{id[4..-2]}"
-							puts "start = #{id[4..-11]}"
+							#puts "id = #{id[4..-2]}"
+							#puts "start = #{id[4..-11]}"
 							session.click_button(id[4..-2])
 							session.find(:id, id[4..-11] + "cmbRenewForYou_Input").click
 							begin
@@ -414,7 +414,7 @@ def verbal (session, config)
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "confirm."){
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "confirm"){
 		#session.within_frame(0) do
 			session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
 		#end
