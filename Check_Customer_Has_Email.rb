@@ -26,7 +26,7 @@ def check_customer_has_email(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "check_customer_has_email", "run"){
 		session.within_frame(0) do
 			session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_Input").click
-			if(session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_DropDown")['innerHTML'].scan("asdf@asdf.com").count == 0)
+			if(session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_DropDown")['innerHTML'].scan(config['email']).count == 0)
 				no_email = true
 			end
 		end
@@ -53,7 +53,7 @@ def fill_in_email(session, config)
 				session.find(:xpath, "/html/body/form/div[5]/div/div[2]/div/div[2]/div[1]/div[3]/div[2]/div[1]").click
 				session.click_button("ctl00_MainArea_ucMntCustomerContact_btnAddEmails")
 			end
-			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_rptEmails_ctl01_ucMntEmail_txtEmailAddress_text").send_keys("asdf@asdf.com")
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_rptEmails_ctl01_ucMntEmail_txtEmailAddress_text").send_keys(config['email'])
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnSave")
 		end
 	})

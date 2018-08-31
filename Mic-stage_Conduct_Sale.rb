@@ -302,7 +302,7 @@ def summary (session, config)
 							puts "start = #{id[4..-11]}"
 							session.click_button(id[4..-2])
 							session.find(:id, id[4..-11] + "txtLandline_text").native.clear
-							session.find(:id, id[4..-11] + "txtLandline_text").send_keys("02087878787")
+							session.find(:id, id[4..-11] + "txtLandline_text").send_keys(config['landline'])
 						}
 						wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
 							session.click_button(id[4..-11] + "btnSaveLandline")

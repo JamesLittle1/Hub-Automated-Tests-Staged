@@ -49,7 +49,7 @@ def new_customer_screen(session, config)
 				session.find(:id, "BusinessName").send_keys(config['business_name'])
 				session.find(:id, "PostCode").send_keys(config['postcode'])
 				session.find(:id, "IsCOT").send_keys("\ue015\ue015")
-				session.find(:id, "Mobile").send_keys("07878787878")
+				session.find(:id, "Mobile").send_keys(config['mobile'])
 				session.click_button("search-button")
 			end
 		end
