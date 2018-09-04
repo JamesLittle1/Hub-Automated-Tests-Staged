@@ -25,18 +25,11 @@ if(!select_customer(session, config, true))
 end
 
 def check_customer_has_email(session, config)
-	no_email = false
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "check_customer_has_email", "run"){
-		session.within_frame(0) do
-			session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_Input").click
-			if(session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_DropDown")['innerHTML'].scan(config['email']).count == 0)
-				no_email = true
-			end
-		end
-	})
+	no_email = [false]
+	if(!check(session, config, no_email))
 		return false
 	end
-	if(no_email)
+	if(no_email[0])
 		session.within_frame(0) do
 			session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_imgContactEdit").click
 		end
@@ -69,8 +62,31 @@ def fill_in_email(session, config)
 	})
 		return false
 	end
+	no_email = [false]
+	if(!check(session, config, no_email))
+		return false
+	end
+	if(no_email[0])
+		puts "Error: Customer still has no email"
+	else
+		puts "Customer has email now!"
+	end
 	puts "Customer's email successfully added"
 	return true
+end
+
+def check(session, config, no_email)
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "check_customer_has_email", "run"){
+		session.within_frame(0) do
+			session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_Input").click
+			if(session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_DropDown")['innerHTML'].scan(config['email']).count == 0)
+				no_email[0] = true
+			end
+		end
+		return true
+	})
+		return false
+	end
 end
 
 if(!check_customer_has_email(session, config))
