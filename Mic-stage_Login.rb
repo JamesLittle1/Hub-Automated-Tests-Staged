@@ -15,13 +15,6 @@ def login(session, config, input1="", input2="", live=false)
 		end
 	end
 	return false
-	# sleep(3)
-	# if(session.has_css?("html body#shell form#aspnetForm div#outer div#outer-left div#logo-top"))
-		# puts "Successfully logged onto Hub!"
-	# else
-		# puts "Failed to log onto Hub"
-		# exit -1
-	# end
 end
 
 def authenticate(browser, input1="", input2="") # Now have to send in usename and password every time we authenticate

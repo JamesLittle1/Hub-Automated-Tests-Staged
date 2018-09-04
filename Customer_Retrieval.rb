@@ -18,7 +18,6 @@ if(!search_customers(session, config))
 	exit -1
 end
 if(!select_customer(session, config))
-#if(!select_customer(session, config, true))
 	puts "select_customer failed"
 	exit -1
 end

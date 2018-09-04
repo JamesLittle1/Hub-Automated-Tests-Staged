@@ -35,7 +35,6 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 				puts "No items returned from search - try again"
 				press_search(session, config, pipeline, override)
 			end
-			#session.find(:xpath, "//tr[@id='ctl00_MainArea_grdSearchResults_ctl00__0']/td[6]").click
 			session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
 			session.find(:id, "ctl00_MainArea_btnEdit").click
 		else
@@ -47,7 +46,6 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 					puts "No items returned from search - try again"
 					press_search(session, config, pipeline, override)
 				end
-				#session.find(:xpath, "//tr[@id='ctl00_MainArea_grdSearchResults_ctl00__0']/td[6]").click
 				session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
 				session.find(:id, "ctl00_MainArea_btnEdit").click
 			end
@@ -86,25 +84,15 @@ end
 
 def confirm_customer(session, config)#, frame=false)
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer's page", "Load"){
-		# if(frame)
-			# doc = session.find(:id, "main-inner")['innerHTML']
-			# if (doc.scan("Customer Number").count > 0)
-				# puts "Customer page opened successfully!"
-				# return true
-			# elsif(doc.scan("Customer Number").count <= 0)
-				# raise "The Customer could not be successfully retrieved."
-			# end
-		# else
-			session.within_frame(0) do
-				doc = session.find(:id, "main-inner")['innerHTML']
-				if (doc.scan("Customer Number").count > 0)
-					puts "Customer page opened successfully!"
-					return true
-				elsif(doc.scan("Customer Number").count <= 0)
-					raise "The Customer could not be successfully retrieved."
-				end
+		session.within_frame(0) do
+			doc = session.find(:id, "main-inner")['innerHTML']
+			if (doc.scan("Customer Number").count > 0)
+				puts "Customer page opened successfully!"
+				return true
+			elsif(doc.scan("Customer Number").count <= 0)
+				raise "The Customer could not be successfully retrieved."
 			end
-		# end
+		end
 	})
 		return false
 	end
