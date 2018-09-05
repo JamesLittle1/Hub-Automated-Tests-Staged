@@ -7,7 +7,7 @@ def search_customers(session, config, input1="", input2="")
 				session.click_link("All Customers")
 				authenticate(session.driver.browser, input1, input2)
 			end
-		rescue Capybara::ModalNotFound
+		rescue Capybara::ModalNotFound, Selenium::WebDriver::Error::NoSuchAlertError
 		end
 	})
 		return false
@@ -42,7 +42,10 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 				press_search(session, config, pipeline, override)
 			end
 			session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-			session.click_button("View")
+			begin
+				session.click_button("View")
+			rescue Net::ReadTimeout
+			end
 		else
 			session.within_frame(0) do
 				if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
@@ -53,7 +56,10 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 					press_search(session, config, pipeline, override)
 				end
 				session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-				session.click_button("View")
+				begin
+					session.click_button("View")
+				rescue Net::ReadTimeout
+				end
 			end
 		end
 	})
