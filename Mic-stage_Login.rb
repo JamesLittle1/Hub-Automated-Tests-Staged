@@ -2,7 +2,11 @@ def login(session, config, input1="", input2="", live=false)
 	if(live)
 		session.visit("http://micapp1")
 	else
-		session.visit("http://mic-stage02")
+		begin
+			session.visit("http://mic-stage02")
+		rescue
+			session.visit("http://10.16.50.151")
+		end
 	end
 	authenticate(session.driver.browser, input1, input2)
 	# check that we have logged on correctly
