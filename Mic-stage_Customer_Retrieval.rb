@@ -47,7 +47,7 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 					press_search(session, config, pipeline, override)
 				end
 				session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-				session.find(:id, "ctl00_MainArea_btnEdit").click
+				session.click_button("View")
 			end
 		end
 	})
