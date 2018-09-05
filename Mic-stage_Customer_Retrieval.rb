@@ -1,8 +1,14 @@
 # Method to search for all customers
-def search_customers(session, config)
+def search_customers(session, config, input1="", input2="")
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Homepage", "load"){
-		session.click_link("Search")
-		session.click_link("All Customers")
+		begin
+			session.click_link("Search")
+			session.accept_alert do
+				session.click_link("All Customers")
+				authenticate(session.driver.browser, input1, input2)
+			end
+		rescue Capybara::ModalNotFound
+		end
 	})
 		return false
 	end
@@ -82,15 +88,25 @@ def press_search(session, config, pipeline, override)
 	end
 end
 
-def confirm_customer(session, config)#, frame=false)
+def confirm_customer(session, config, frame=false)
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer's page", "Load"){
-		session.within_frame(0) do
+		if(frame)
 			doc = session.find(:id, "main-inner")['innerHTML']
 			if (doc.scan("Customer Number").count > 0)
 				puts "Customer page opened successfully!"
 				return true
 			elsif(doc.scan("Customer Number").count <= 0)
 				raise "The Customer could not be successfully retrieved."
+			end
+		else
+			session.within_frame(0) do
+				doc = session.find(:id, "main-inner")['innerHTML']
+				if (doc.scan("Customer Number").count > 0)
+					puts "Customer page opened successfully!"
+					return true
+				elsif(doc.scan("Customer Number").count <= 0)
+					raise "The Customer could not be successfully retrieved."
+				end
 			end
 		end
 	})

@@ -17,7 +17,7 @@ if(!select_customer(session, config, false, true))
 	puts "select_customer failed"
 	exit -1
 end
-if(!confirm_customer(session, config))
+if(!confirm_customer(session, config, true))
 	puts "select_customer failed"
 	exit -1
 end

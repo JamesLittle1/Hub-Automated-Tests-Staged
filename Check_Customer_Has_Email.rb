@@ -14,7 +14,7 @@ if(!login(session, config, ARGV[0], ARGV[1]))
 	exit -1
 end
 
-if(!search_customers(session, config))
+if(!search_customers(session, config, ARGV[0], ARGV[1]))
 	puts "Search_customers failed"
 	exit -1
 end
