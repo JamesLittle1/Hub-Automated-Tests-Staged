@@ -36,7 +36,7 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 				press_search(session, config, pipeline, override)
 			end
 			session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-			session.find(:id, "ctl00_MainArea_btnEdit").click
+			session.click_button("View")
 		else
 			session.within_frame(0) do
 				if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
