@@ -198,7 +198,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 				if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Get Prices", "authenticate"){
 					authenticate(session.driver.browser, input1, input2)
 				})
-					return false
+					raise "Could not authenticate within #{config['loop_times']}."
 				end
 				puts "Successfully switched to error, returning false"
 				sleep(1)
