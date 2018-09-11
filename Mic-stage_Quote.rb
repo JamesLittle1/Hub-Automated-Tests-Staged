@@ -195,7 +195,11 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
 			if(auth)
 				# Authenticate
-				authenticate(session.driver.browser, input1, input2)
+				if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
+					authenticate(session.driver.browser, input1, input2)
+				})
+					return false
+				end
 				puts "Successfully switched to error, returning false"
 				sleep(1)
 				return false
