@@ -195,7 +195,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
 			if(auth)
 				# Authenticate
-				if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
+				if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Get Prices", "authenticate"){
 					authenticate(session.driver.browser, input1, input2)
 				})
 					return false
