@@ -22,26 +22,26 @@ def quote(session, config, input1="", input2="", prod)
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote page", "load"){
-		create_new = [false]
-		searching = true
-		while(searching) do
-			puts "create_new = #{create_new[0]}"
-			
-			case prod
-				when Products.send(:electricity), Products.send(:gas)
-					searching = search_for_meter(session, config, create_new, input1, input2, prod)
-				when Products.send(:landline)
-					searching = search_for_landline(session, config, create_new)
-				when Products.send(:broadband)
-					searching = search_for_broadband(session, config, create_new)
-				when Products.send(:mobile)
-					searching = search_for_mobile(session, config, create_new)
-			end
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote page", "load"){
+	create_new = [false]
+	searching = true
+	while(searching) do
+		puts "create_new = #{create_new[0]}"
+		
+		case prod
+			when Products.send(:electricity), Products.send(:gas)
+				searching = search_for_meter(session, config, create_new, input1, input2, prod)
+			when Products.send(:landline)
+				searching = search_for_landline(session, config, create_new)
+			when Products.send(:broadband)
+				searching = search_for_broadband(session, config, create_new)
+			when Products.send(:mobile)
+				searching = search_for_mobile(session, config, create_new)
 		end
-	})
-		return false
 	end
+	# })
+		# return false
+	# end
 	
 	return true
 end
@@ -175,73 +175,159 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 	end
 	
 	#qualify if search worked
-	begin
-		puts "Giving the website #{config['authentication_load']} seconds to load, just to be safe"
-		sleep(config['authentication_load'])
-		puts "Authenticating"
-		authenticate(session.driver.browser, input1, input2)
-		puts "Successfully switched to error, returning false"
-		sleep(1)
-		return false
-	rescue Selenium::WebDriver::Error::NoSuchAlertError => e
-		puts "Failed to switch to alert, exception caught"
-		doc = session.html
-		r = Regexp.new(/<li>Current Supplier field is mandatory<\/li>/)
-		r1 = Regexp.new(/<li>No Reason field is mandatory<\/li>/)
-		r2 = Regexp.new(/<li>Standing Charge field is mandatory<\/li>/)
-		r3 = Regexp.new(/<li>Consumption PA field is mandatory<\/li>/)
-		need_current_supplier = doc.scan(r).count > 0
-		need_reason = doc.scan(r1).count > 0
-		need_standing_charge = doc.scan(r2).count > 0
-		need_consumption_pa = doc.scan(r3).count > 0
-		
+	#begin
 		case prod
 			when Products.send(:electricity)
-				if(need_current_supplier || need_reason)
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlContractMoreInfo").click
-					if(need_current_supplier)
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
-					end
-					if(need_reason)
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtInContractNoReason_text").send_keys("sdgsdg")
-					end
-				end
-				if(need_standing_charge)
-					begin
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
-					rescue
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlConsumptionRates").click
-					end
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text").send_keys("15000")
-					session.choose("ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rblCurrentRateType_2")
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("5")
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
-				end
+				id = "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_vSummaryElectric"
 			when Products.send(:gas)
-				if(need_current_supplier || need_reason)
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlContractMoreInfo").click
-					if(need_current_supplier)
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
-					end
-					if(need_reason)
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtInContractNoReason_text").send_keys("sdgsdg")
-					end
-				end
-				if(need_standing_charge || need_consumption_pa)
-					begin
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
-					rescue
-						session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlConsumptionRates").click
-					end
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtUnits_text").send_keys("15000")
-					session.choose("ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_rblCurrentRateType_2")
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("5")
-					session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
-					#create_new[0] = false
-				end
+				id = "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_vSummaryGas"
 		end
-		return true
-	end
+		
+		while(true)
+			begin
+				auth = session.html.scan(/style=\"transform: translate3d\([\d]+\.?[\d]*%/).count > 0
+				break
+			rescue NoMethodError
+				puts "Page still loading"
+			end
+		end
+		
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			if(auth)
+				# Authenticate
+				authenticate(session.driver.browser, input1, input2)
+				puts "Successfully switched to error, returning false"
+				sleep(1)
+				return false
+			elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\)/).count > 0)
+				# No authentication
+				doc = session.html
+				r = Regexp.new(/<li>Current Supplier field is mandatory<\/li>/)
+				r1 = Regexp.new(/<li>No Reason field is mandatory<\/li>/)
+				r2 = Regexp.new(/<li>Standing Charge field is mandatory<\/li>/)
+				r3 = Regexp.new(/<li>Consumption PA field is mandatory<\/li>/)
+				need_current_supplier = doc.scan(r).count > 0
+				need_reason = doc.scan(r1).count > 0
+				need_standing_charge = doc.scan(r2).count > 0
+				need_consumption_pa = doc.scan(r3).count > 0
+				
+				case prod
+					when Products.send(:electricity)
+						if(need_current_supplier || need_reason)
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlContractMoreInfo").click
+							if(need_current_supplier)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
+							end
+							if(need_reason)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtInContractNoReason_text").send_keys("sdgsdg")
+							end
+						end
+						if(need_standing_charge)
+							begin
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
+							rescue
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlConsumptionRates").click
+							end
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text").send_keys("15000")
+							session.choose("ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rblCurrentRateType_2")
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("5")
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
+						end
+					when Products.send(:gas)
+						if(need_current_supplier || need_reason)
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlContractMoreInfo").click
+							if(need_current_supplier)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
+							end
+							if(need_reason)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtInContractNoReason_text").send_keys("sdgsdg")
+							end
+						end
+						if(need_standing_charge || need_consumption_pa)
+							begin
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
+							rescue
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlConsumptionRates").click
+							end
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtUnits_text").send_keys("15000")
+							session.choose("ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_rblCurrentRateType_2")
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("5")
+							session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
+							#create_new[0] = false
+						end
+				end
+				return true
+			end
+		})
+			return false
+		end
+		
+		# puts "Giving the website #{config['authentication_load']} seconds to load, just to be safe"
+		# sleep(config['authentication_load'])
+		# puts "Authenticating"
+		# authenticate(session.driver.browser, input1, input2)
+		# puts "Successfully switched to error, returning false"
+		# sleep(1)
+		# return false
+	#rescue Selenium::WebDriver::Error::NoSuchAlertError => e
+		# puts "Failed to switch to alert, exception caught"
+		# doc = session.html
+		# r = Regexp.new(/<li>Current Supplier field is mandatory<\/li>/)
+		# r1 = Regexp.new(/<li>No Reason field is mandatory<\/li>/)
+		# r2 = Regexp.new(/<li>Standing Charge field is mandatory<\/li>/)
+		# r3 = Regexp.new(/<li>Consumption PA field is mandatory<\/li>/)
+		# need_current_supplier = doc.scan(r).count > 0
+		# need_reason = doc.scan(r1).count > 0
+		# need_standing_charge = doc.scan(r2).count > 0
+		# need_consumption_pa = doc.scan(r3).count > 0
+		
+		# case prod
+			# when Products.send(:electricity)
+				# if(need_current_supplier || need_reason)
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlContractMoreInfo").click
+					# if(need_current_supplier)
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
+					# end
+					# if(need_reason)
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtInContractNoReason_text").send_keys("sdgsdg")
+					# end
+				# end
+				# if(need_standing_charge)
+					# begin
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
+					# rescue
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlConsumptionRates").click
+					# end
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text").send_keys("15000")
+					# session.choose("ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rblCurrentRateType_2")
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("5")
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
+				# end
+			# when Products.send(:gas)
+				# if(need_current_supplier || need_reason)
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlContractMoreInfo").click
+					# if(need_current_supplier)
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_cmbCurrentSupplier_Input").send_keys("\ue015\ue015")
+					# end
+					# if(need_reason)
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtInContractNoReason_text").send_keys("sdgsdg")
+					# end
+				# end
+				# if(need_standing_charge || need_consumption_pa)
+					# begin
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_rptConsumption_ctl00_txtUnits_text")
+					# rescue
+						# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_pnlConsumptionRates").click
+					# end
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtUnits_text").send_keys("15000")
+					# session.choose("ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_rblCurrentRateType_2")
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("5")
+					# session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_txtStandingCharge_text").send_keys("\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue003\ue0035")
+					# #create_new[0] = false
+				# end
+		# end
+		# return true
+	#end
 end
 
 def moved_into_premises(session)
