@@ -35,11 +35,11 @@ class CheckType
 end
 
 def search_objections_rejections(session, config, type1, type2)
-	if(!checking_objections_rejections(type1))
+	if(!CheckType.checking_objections_rejections(type1))
 		puts "Input 3 not an objection or rejection"
 		return false
 	end
-	if(!checking_new_unresolved(type2))
+	if(!CheckType.checking_new_unresolved(type2))
 		puts "Input 4 not new or unresolved"
 		return false
 	end

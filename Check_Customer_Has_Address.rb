@@ -42,7 +42,7 @@ def check_customer_has_address(session, config)
 			if(!check(session, config))
 				puts "Adding customer's home address"
 				# Trying to add address that's already there first
-				address_added[0] = add_address(session)
+				address_added[0] = add_address(session, config)
 				puts "address_added[0] = #{address_added[0]}"
 			else
 				puts "Customer already has home address"
@@ -59,44 +59,64 @@ def check_customer_has_address(session, config)
 	#end
 end
 
-def add_address(session)
+def add_address(session, config)
 	session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").click
 	dropdown = session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_DropDown")['innerHTML']
 	if(dropdown.scan(/<li/).count > 1)
 		puts "Adding address officially"
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue015")
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue006")
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue015")
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue006")
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
+		})
+			raise "Error running Add_Address"
+		end
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_popupButton").click
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_calendar_Title").click
-		session.find(:id, "rcMView_PrevY").click
-		session.find(:id, "rcMView_2012").click
-		session.find(:id, "rcMView_OK").click
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_calendar_Top").click_link("10")
-		session.click_button("Save")
-		session.click_button("Exit")
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_popupButton").click
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_calendar_Title").click
+			session.find(:id, "rcMView_PrevY").click
+			session.find(:id, "rcMView_2012").click
+			session.find(:id, "rcMView_OK").click
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_calendar_Top").click_link("10")
+			session.click_button("Save")
+			session.click_button("Exit")
+		})
+			raise "Error running Add_Address"
+		end
 		return true
 	else
 		# If not then fill in new address
 		puts "Filling in new address"
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").native.clear
-		session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").send_keys("SM4 5BE")
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnSearchPostCode")
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").native.clear
+			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").send_keys("SM4 5BE")
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnSearchPostCode")
+		})
+			raise "Error running Add_Address"
+		end
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		session.check("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_grdSearchResults_ctl00_ctl22_ClientSelectColumnSelectCheckBox")
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnUseSelected")
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.check("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_grdSearchResults_ctl00_ctl22_ClientSelectColumnSelectCheckBox")
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnUseSelected")
+		})
+			raise "Error running Add_Address"
+		end
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnSaveAddressDetailsUC")
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_btnSave")
-		session.click_button("ctl00_MainArea_ucMntCustomerContact_btnClose")
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnSaveAddressDetailsUC")
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnSave")
+			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnClose")
+		})
+			raise "Error running Add_Address"
+		end
 		return false
 	end
 end

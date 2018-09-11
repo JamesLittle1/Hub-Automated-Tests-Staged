@@ -8,9 +8,11 @@ require './Mic-stage_Objections_Rejections.rb'
 
 config = YAML.load_file("./config.yml")
 
-session = Capybara::Session.new :selenium
-login(session, config, ARGV[0], ARGV[1])
-
+session = Capybara::Session.new :selenium_firefox
+if(!login(session, config, ARGV[0], ARGV[1], true))
+	puts "Failed to log onto Hub"
+	exit -1
+end
 if(!search_objections_rejections(session, config, CheckType.send(ARGV[2].to_sym), CheckType.send(ARGV[3].to_sym)))
 	puts "Failed to successfully complete search_unresolved_objections."
 	exit -1
