@@ -6,6 +6,7 @@ require './Mic-stage_Customer_Retrieval.rb'
 require './wait_for_page_to_load.rb'
 require './Mic-stage_Quote.rb'
 require './Product.rb'
+require './wait_for_authentication_to_load.rb'
 config = YAML.load_file("./config.yml")
 prod = Products.send(ARGV[2].downcase.to_sym)
 if(!Products.checking_one_of_products(prod))

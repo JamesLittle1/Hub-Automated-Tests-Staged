@@ -77,7 +77,7 @@ def select_quote (session, config, prod)
 			id = id_search[0].scan(/<input id=\".*Select\" name/)[0].scan(/\".*\"/)[0][1..-2]
 		else
 			puts "Could not find a Quote for #{prod}."
-			exit -1
+			return false
 		end
 		session.check(id)
 		session.click_button("ctl00_MainArea_wzrdConductSale_StartNavigationTemplateContainerID_StepNextButton")
@@ -193,6 +193,9 @@ def additional_data (session, config)
 	})
 		return false
 	end
+	while(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep\d\"/).count > 0)
+		#Waiting for page to load
+	end
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Supply/Billing Address Details", "load"){
 		session.find(:id, "HeaderAddresses").click
 		session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_btnSaveAddresses")
@@ -240,6 +243,36 @@ def summary (session, config)
 					}
 				end
 			end
+			
+			# Capture Date Of Birth
+			cdob = session.html.scan(/Capture Date Of Birth.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			if(cdob.count > 0)
+				id = cdob[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
+				if(!id.nil? && !id.empty?)
+					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Date Of Birth tick", "fill in"){
+						session.click_button(id[4..-2])
+					}
+					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+						session.click_button(id[4..-11] + "btnSaveDoB")
+					}
+				end
+			end
+			# Capture Home Address
+			cha = session.html.scan(/Capture Home Address.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			if(cha.count > 0)
+				id = cha[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
+				if(!id.nil? && !id.emoty?)
+					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Home Address tick", "fill in"){
+						session.click_button(id[4..-2])
+						session.find(:id, id[4..-11] + "ucMntContactAddresses_rptAddresses_ctl01_ucMntAddress_cmbType_Arrow").click
+						
+					}
+					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+						session.click_button(id[4..-11] + "btnSaveAddresses")
+					}
+				end
+			end
+			
 			#DIFY
 			dify = session.html.scan(/Do It For You.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(dify.count > 0)
@@ -308,53 +341,98 @@ def preferences (session, config)
 end
 
 def verbal (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract page", "load"){
-		session.click_button("Verbal Contract")
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract page", "load"){
+		# session.click_button("Verbal Contract")
+	# })
+		# return false
+	# end
+	
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "generate"){
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStart").click
+	# })
+		# return false
+	# end
+	
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "play"){
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStop").click
+	# })
+		# return false
+	# end
+	
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract confirmation", "load"){
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_radWdwConfirm_C_btnConfirm").click
+	# })
+		# return false
+	# end
+	
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "confirm"){
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
+	# })
+		# return false
+	# end
+	
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal tab", "load"){
+		wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
+			session.click_button("EContract")
+			session.driver.browser.switch_to.alert.accept()
+		}
 	})
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "generate"){
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStart").click
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "preview"){
+		session.click_button("Send")
 	})
 		return false
 	end
-	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "play"){
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStop").click
-	})
-		return false
+	# need to wait for this to load
+	# Setting up custom wait_for_page_to_load that only tries to click next once EContractSend disappears from view instead of being obscured
+	while(true)
+		if(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1\"/).count == 0)
+			break
+		end
 	end
-	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract confirmation", "load"){
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_radWdwConfirm_C_btnConfirm").click
-	})
-		return false
-	end
-	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "confirm"){
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
 	})
 		return false
 	end
 	
+	# if(!wait_for_econtract_to_send(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
+		# begin
+			# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btn_EContractSend")
+		# rescue Capybara::ElementNotFound
+			# session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
+		# end
+	# })
+		# return false
+	# end
 	return true
 end
 
 def finish (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail").click
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_grdContracts_ctl00_ctl02_ctl00_ClientSelectSelectCheckBox").click
-		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_btnActionEmails").click
+	# Find another way to confirm that this went through
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail").click
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_grdContracts_ctl00_ctl02_ctl00_ClientSelectSelectCheckBox").click
+		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_btnActionEmails").click
+	# })
+		# return false
+	# end
+	
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "send"){
+		# session.driver.browser.switch_to.alert.accept()
+		# puts "Email has been sent successfully!"
+	# })
+		# return false
+	# end
+	
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail")
+		puts "Successfully made it to the Final Page"
 	})
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "send"){
-		session.driver.browser.switch_to.alert.accept()
-		puts "Email has been sent successfully!"
-	})
-		return false
-	end
 	return true
 end

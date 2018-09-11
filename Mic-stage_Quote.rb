@@ -54,8 +54,9 @@ def get_prices (session, config)
 			array = doc.scan(r)
 			array1 = array[0].scan(/ember\d*/)
 			session.find(:id, array1[0]).click
+			puts "New Quote Selected"
 		rescue
-			puts "Quote already selected"
+			puts "Quote already selected (or page still loading)"
 		end
 		session.click_button("Finish Quote")
 	})
@@ -76,12 +77,17 @@ def send_quote_email (session, config)
 	end
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "load"){
 		session.within_frame(0) do
+			while (true)
+				if(session.html.scan(/id=\"ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxLoadingPanel1ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxPanel1\"/).count == 0)
+					break
+				end
+			end
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_ucEmailPreview_wdwEmailPreview_C_btnSend").click
 		end
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "send"){
+	if(!wait_for_authentication_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "send"){
 		session.driver.browser.switch_to.alert.accept()
 		puts "Email was sent successfully!"
 	})
@@ -104,12 +110,15 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl07_GECBtnExpandColumn").click
 		}
 		wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote page", "load"){
-			case prod
-				when Products.send(:electricity)
-					session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail20_ctl04_btnAddMPAN")
-				when Products.send(:gas)
-					session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail21_ctl04_btnAddMPR")
-			end
+			wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
+				case prod
+					when Products.send(:electricity)
+						session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail20_ctl04_btnAddMPAN")
+					when Products.send(:gas)
+						session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail21_ctl04_btnAddMPR")
+				end
+				session.driver.browser.switch_to.alert.accept()
+			}
 		}
 		create_new[0] = false
 	end
