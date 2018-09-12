@@ -193,9 +193,9 @@ def additional_data (session, config)
 	})
 		return false
 	end
-	while(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep\d\"/).count > 0)
-		#Waiting for page to load
-	end
+	# while(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep\d\"/).count > 0)
+		# #Waiting for page to load
+	# end
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Supply/Billing Address Details", "load"){
 		session.find(:id, "HeaderAddresses").click
 		session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_btnSaveAddresses")
@@ -387,11 +387,11 @@ def verbal (session, config)
 	end
 	# need to wait for this to load
 	# Setting up custom wait_for_page_to_load that only tries to click next once EContractSend disappears from view instead of being obscured
-	while(true)
-		if(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1\"/).count == 0)
-			break
-		end
-	end
+	# while(true)
+		# if(session.html.scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1\"/).count == 0)
+			# break
+		# end
+	# end
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
 	})
@@ -427,7 +427,7 @@ def finish (session, config)
 		# return false
 	# end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search'){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail")
 		puts "Successfully made it to the Final Page"
 	})

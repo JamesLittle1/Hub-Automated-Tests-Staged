@@ -65,37 +65,6 @@ def get_prices (session, config)
 	return true
 end
 
-# def send_quote_email (session, config)
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
-		# session.within_frame(0) do
-			# session.choose("Generate Quote Email")
-			# session.check("ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_grdPremisesMeters_ctl00_ctl04_masterCheckbox")
-			# session.click_button("Generate Email")
-		# end
-	# })
-		# return false
-	# end
-	# if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "load"){
-		# session.within_frame(0) do
-			# while (true)
-				# if(session.html.scan(/id=\"ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxLoadingPanel1ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxPanel1\"/).count == 0)
-					# break
-				# end
-			# end
-			# session.find(:id, "ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_ucEmailPreview_wdwEmailPreview_C_btnSend").click
-		# end
-	# })
-		# return false
-	# end
-	# if(!wait_for_authentication_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "send"){
-		# session.driver.browser.switch_to.alert.accept()
-		# puts "Email was sent successfully!"
-	# })
-		# return false
-	# end
-	# return true
-# end
-
 def confirm_quote(session, config, prod)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Screen", "load"){
 		session.click_button("Exit")
@@ -218,11 +187,23 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
 			if(auth)
 				# Authenticate
-				if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Get Prices", "authenticate"){
-					authenticate(session.driver.browser, input1, input2)
-				})
-					raise "Could not authenticate within #{config['loop_times']}."
+				# if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Get Prices", "authenticate"){
+					# authenticate(session.driver.browser, input1, input2)
+				# })
+					# raise "Could not authenticate within #{config['loop_times']}."
+				# end
+				for i in 0..config['loop_times_customer_search']
+					begin
+						session.driver.browser.switch_to.alert
+						puts "Alert successfully switched to"
+						break
+					rescue Selenium::WebDriver::Error::NoSuchAlertError
+						puts "Authentication still loading"
+						sleep(1)
+					end
 				end
+				puts "Exited loop, now trying to authenticate"
+				authenticate(session.driver.browser, input1, input2)
 				puts "Successfully switched to error, returning false"
 				return false
 			elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\)/).count > 0)
