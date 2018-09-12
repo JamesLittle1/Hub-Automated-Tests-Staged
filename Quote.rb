@@ -38,13 +38,16 @@ if(prod == Products.send(:electricity) || prod == Products.send(:gas))
 		puts "Failed to get prices"
 		exit -1
 	end
+end
+
+begin
 	session.within_frame(0) do
 		if(!confirm_quote(session, config, prod))
 			puts "Failed to confirm quote"
 			exit -1
 		end
 	end
-else
+rescue Capybara::ExpectationNotMet
 	if(!confirm_quote(session, config, prod))
 		puts "Failed to confirm quote"
 		exit -1
