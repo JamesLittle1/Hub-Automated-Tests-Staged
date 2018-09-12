@@ -201,7 +201,6 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 					raise "Could not authenticate within #{config['loop_times']}."
 				end
 				puts "Successfully switched to error, returning false"
-				sleep(1)
 				return false
 			elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\)/).count > 0)
 				# No authentication
