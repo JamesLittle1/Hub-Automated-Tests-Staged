@@ -613,7 +613,8 @@ def search_for_mobile(session, config, create_new)
 		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numEstimatedNewMonthlyCallSpend_text").send_keys("20")
 	end
 	if(need_annual_saving_or_contract_saving)
-		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").send_keys("30")
+		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numAnnualSaving_text").send_keys("30")
+		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numContractSaving_text").send_keys("30")
 	end
 	if(need_total_current_monthly_spend)
 		session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMobile_ctl00_ucQuotingMobile_numTotalCurrentMonthlySpend_text").send_keys("10")
