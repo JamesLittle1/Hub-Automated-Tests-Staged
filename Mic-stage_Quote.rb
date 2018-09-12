@@ -65,32 +65,55 @@ def get_prices (session, config)
 	return true
 end
 
-def send_quote_email (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
-		session.within_frame(0) do
-			session.choose("Generate Quote Email")
-			session.check("ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_grdPremisesMeters_ctl00_ctl04_masterCheckbox")
-			session.click_button("Generate Email")
-		end
+# def send_quote_email (session, config)
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
+		# session.within_frame(0) do
+			# session.choose("Generate Quote Email")
+			# session.check("ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_grdPremisesMeters_ctl00_ctl04_masterCheckbox")
+			# session.click_button("Generate Email")
+		# end
+	# })
+		# return false
+	# end
+	# if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "load"){
+		# session.within_frame(0) do
+			# while (true)
+				# if(session.html.scan(/id=\"ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxLoadingPanel1ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxPanel1\"/).count == 0)
+					# break
+				# end
+			# end
+			# session.find(:id, "ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_ucEmailPreview_wdwEmailPreview_C_btnSend").click
+		# end
+	# })
+		# return false
+	# end
+	# if(!wait_for_authentication_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "send"){
+		# session.driver.browser.switch_to.alert.accept()
+		# puts "Email was sent successfully!"
+	# })
+		# return false
+	# end
+	# return true
+# end
+
+def confirm_quote(session, config, prod)
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Screen", "load"){
+		session.click_button("Exit")
 	})
+		puts "Failed to finish #{prod} quote"
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "load"){
-		session.within_frame(0) do
-			while (true)
-				if(session.html.scan(/id=\"ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxLoadingPanel1ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_RadAjaxPanel1\"/).count == 0)
-					break
-				end
-			end
-			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucQuotingWizardActions_ucEmailPreview_wdwEmailPreview_C_btnSend").click
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirm quote", "complete"){
+		doc = ""
+		doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
+		if(doc.scan(/#{prod}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
+			puts "Successfully quoted #{prod}!"
+		else
+			puts "#{prod} quote not showing up!"
+			exit -1
 		end
 	})
-		return false
-	end
-	if(!wait_for_authentication_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Confirmation Email", "send"){
-		session.driver.browser.switch_to.alert.accept()
-		puts "Email was sent successfully!"
-	})
+		puts "Failed to confirm #{prod} quote"
 		return false
 	end
 	return true
