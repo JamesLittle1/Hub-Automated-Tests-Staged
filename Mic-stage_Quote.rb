@@ -334,10 +334,14 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 end
 
 def moved_into_premises(session)
-	if(session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").value != "No")
-		session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").send_keys("\ue015\ue015")
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Service DC and Quotes tab", "load"){
+		if(session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").value != "No")
+			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").send_keys("\ue015\ue015")
+		end
+		session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_btnSaveCoT").click
+	})
+		raise "Service DC and Quotes tab timed out"
 	end
-	session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_btnSaveCoT").click
 end
 
 def search_for_landline(session, config, create_new)
