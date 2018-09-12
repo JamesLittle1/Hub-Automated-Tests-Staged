@@ -124,7 +124,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		}
 		create_new[0] = false
 	end
-	moved_into_premises(session)
+	moved_into_premises(session, config)
 	session.click_link("#{prod}")
 	
 	#Checking that a meter exists
@@ -333,7 +333,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 	#end
 end
 
-def moved_into_premises(session)
+def moved_into_premises(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Service DC and Quotes tab", "load"){
 		if(session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").value != "No")
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucROPremises_cmbCoT_Input").send_keys("\ue015\ue015")
@@ -349,7 +349,7 @@ def search_for_landline(session, config, create_new)
 		session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 		create_new[0] = false
 	end
-	moved_into_premises(session)
+	moved_into_premises(session, config)
 	session.click_link("Landline")
 	
 	begin
@@ -451,7 +451,7 @@ def search_for_broadband(session, config, create_new)
 		session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 		create_new[0] = false
 	end
-	moved_into_premises(session)
+	moved_into_premises(session, config)
 	session.click_link("Broadband")
 	
 	begin
@@ -528,7 +528,7 @@ def search_for_mobile(session, config, create_new)
 		session.click_button("ctl00_MainArea_wzrdQuoting_btnAddMeter")
 		create_new[0] = false
 	end
-	moved_into_premises(session)
+	moved_into_premises(session, config)
 	session.click_link("Mobile")
 	
 	begin
