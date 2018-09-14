@@ -33,7 +33,13 @@ unless (results.nil? || results[0].nil?)
 	puts table
 end
 
-# sql3 = "exec [customer].[CustomerAutoRemove]"
-# client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
-# result = client.execute(sql3)
-# puts result
+sql3 = "exec [customer].[CustomerAutoRemove]"
+client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
+client.execute('SET ANSI_NULLS ON')
+client.execute('SET ANSI_PADDING ON')
+client.execute('SET ANSI_WARNINGS ON')
+client.execute('SET ARITHABORT ON')
+client.execute('SET CONCAT_NULL_YIELDS_NULL ON')
+client.execute('SET NUMERIC_ROUNDABORT OFF')
+client.execute('SET QUOTED_IDENTIFIER ON')
+result = client.execute(sql3)
