@@ -229,7 +229,7 @@ def summary (session, config)
 		sleep(config['timeout_threshold'])
 		begin
 			#Capture Landline Telephone Number
-			cltn = session.html.scan(/Capture Landline Telephone Number.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			cltn = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Capture Landline Telephone Number.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(cltn.count > 0)
 				id = cltn[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
@@ -245,7 +245,10 @@ def summary (session, config)
 			end
 			
 			# Capture Date Of Birth
-			cdob = session.html.scan(/Capture Date Of Birth.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep4\"/).count > 0)
+				# Waiting for page to load
+			end
+			cdob = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Capture Date Of Birth.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(cdob.count > 0)
 				id = cdob[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
@@ -258,7 +261,10 @@ def summary (session, config)
 				end
 			end
 			# Capture Home Address
-			cha = session.html.scan(/Capture Home Address.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep4\"/).count > 0)
+				# Waiting for page to load
+			end
+			cha = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Capture Home Address.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(cha.count > 0)
 				id = cha[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.emoty?)
@@ -274,7 +280,10 @@ def summary (session, config)
 			end
 			
 			#DIFY
-			dify = session.html.scan(/Do It For You.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep4\"/).count > 0)
+				# Waiting for page to load
+			end
+			dify = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Do It For You.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(dify.count > 0)
 				id = dify[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
@@ -293,6 +302,9 @@ def summary (session, config)
 				end
 			end
 			# Want to do this either way
+			while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep4\"/).count > 0)
+				# Waiting for page to load
+			end
 			session.find(:id, "ctl00_MainArea_wzrdConductSale_cmbDifto_Arrow").click
 			begin
 				session.find(:xpath, "/html/body/form/div[1]/div/div/ul/li[3]").click
