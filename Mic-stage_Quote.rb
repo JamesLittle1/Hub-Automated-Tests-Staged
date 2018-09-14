@@ -78,24 +78,41 @@ def confirm_quote(session, config, prod)
 		puts "Failed to finish #{prod} quote"
 		return false
 	end
+	retries = 5
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirm quote", "complete"){
 		begin
 			session.within_frame(0) do
-				doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
-				if(doc.scan(/#{prod}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
-					puts "Successfully quoted #{prod}!"
-				else
-					puts "#{prod} quote not showing up!"
-					exit -1
+				while(true)
+					doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
+					if(doc.scan(/#{prod}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
+						puts "Successfully quoted #{prod}!"
+						break
+					else
+						if(retries > 0)
+							sleep(1)
+							retries -= 1
+						else
+							puts "#{prod} quote not showing up!"
+							exit -1
+						end
+					end
 				end
 			end
 		rescue Capybara::ExpectationNotMet
-			doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
-			if(doc.scan(/#{prod}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
-				puts "Successfully quoted #{prod}!"
-			else
-				puts "#{prod} quote not showing up!"
-				exit -1
+			while(true)
+				doc = session.find(:id, "ctl00_MainArea_ProductMatrix1_ucProductMatrix1_ProductMatrixTable")['innerHTML']
+				if(doc.scan(/#{prod}.*<\/td><td.*\n.*\n.*background-color:#3030FF/).count > 0)
+					puts "Successfully quoted #{prod}!"
+					break
+				else
+					if(retries > 0)
+						sleep(1)
+						retries -= 1
+					else
+						puts "#{prod} quote not showing up!"
+						exit -1
+					end
+				end
 			end
 		end
 	})
