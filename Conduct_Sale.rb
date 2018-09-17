@@ -43,8 +43,13 @@ if(!confirm_quote(session, config, ARGV[0], ARGV[1]))
 	puts "Failed to pass Confirm Quote tab"
 	exit -1
 end
-if(!additional_data(session, config))
-	puts "Failed to pass Additional Data tab"
+additional_data_bool = false
+for i in 1..config['standard_retry']
+	additional_data_bool = additional_data(session, config)
+	break if additional_data_bool
+end
+if(!additional_data_bool)
+	puts "Failed to pass Additional Data tab after #{config['standard_retry']} attempts"
 	exit -1
 end
 if(!summary(session, config))

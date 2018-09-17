@@ -5,6 +5,7 @@ timeout_threshold_customer_search: 1
 authentication_load: 10
 loop_times_override: 10
 timeout_threshold_override: 1
+standard_retry: 3
 
 first_name: "Automated"
 last_name: "Test"
