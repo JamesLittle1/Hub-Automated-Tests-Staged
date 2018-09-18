@@ -399,11 +399,19 @@ def verbal (session, config)
 	end
 	# need to wait for this to load
 	# Setting up custom wait_for_page_to_load that only tries to click next once EContractSend disappears from view instead of being obscured
+	sleep(2)
 	while(true)
-		if(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1\"/).count == 0)
+		begin
+			session.find(:id, "ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1")
+		rescue Capybara::ElementNotFound
 			break
 		end
 	end
+	# while(true)
+		# if(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanel1\"/).count == 0)
+			# break
+		# end
+	# end
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
 	})
