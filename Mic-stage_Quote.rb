@@ -23,6 +23,8 @@ def quote(session, config, input1="", input2="", prod)
 	end
 	
 	create_new = [true]
+	#create_new = [false] # remove after testing
+	
 	# searching = true
 	# while(searching) do
 		case prod
@@ -53,6 +55,7 @@ def get_prices (session, config)
 			puts "New Quote Selected"
 		rescue
 			puts "Quote already selected (or page still loading)"
+			sleep(1)
 		end
 		session.click_button("Finish Quote")
 	})
@@ -62,7 +65,7 @@ def get_prices (session, config)
 end
 
 def confirm_quote(session, config, prod)
-	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer Screen", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Finish Tab", "load"){
 		begin
 			session.within_frame(0) do
 				session.click_button("Exit")
@@ -71,10 +74,10 @@ def confirm_quote(session, config, prod)
 			session.click_button("Exit")
 		end
 	})
-		puts "Failed to finish #{prod} quote"
+		puts "Failed to finish #{prod} quote (couldn't click exit on finish tab)"
 		return false
 	end
-	retries = 5
+	retries = 10
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirm quote", "complete"){
 		begin
 			session.within_frame(0) do
@@ -121,6 +124,7 @@ end
 # Methods from above
 def search_for_meter (session, config, create_new, input1="", input2="", prod)
 	puts "Entered search_for_meter"
+	moved_into_premises(session, config)
 	
 	if(create_new[0])
 		session.click_link("Search")
@@ -146,11 +150,21 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		}
 		create_new[0] = false
 	end
-	moved_into_premises(session, config)
 	session.click_link("#{prod}")
 	
-	#Checking that a meter exists
+	# Checking that a meter exists
 	puts "Checking if meter exists"
+	# Wait for element to load
+	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{prod} panel", "load"){
+		case prod
+			when Products.send(:electricity)
+				session.find(:id, "ctl00_MainArea_wzrdQuoting_pnlElectric")
+			when Products.send(:gas)
+				session.find(:id, "ctl00_MainArea_wzrdQuoting_pnlGas")
+		end
+	})
+		raise "#{prod} panel not found"
+	end
 	case prod
 		when Products.send(:electricity)
 			if(session.find(:id, "ctl00_MainArea_wzrdQuoting_pnlElectric")['innerHTML'].scan("ctl00_MainArea_wzrdQuoting_rptMPANS_ctl00_ucQuotingMPAN_pnlElecMeter").count ==0)
@@ -205,18 +219,28 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 			when Products.send(:gas)
 				id = "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_vSummaryGas"
 		end
-		
+		# Adding wait so we're sure page would have started loading this if authentication needed
+		sleep(2)
 		while(true)
 			begin
-				auth = session.html.scan(/style=\"transform: translate3d\([\d]+\.?[\d]*%/).count > 0
-				break
+				if(session.html.scan(/style=\"transform: translate3d\([\d]+\.?[\d]*%/).count > 0)
+					auth = true
+					break
+				elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\)/).count > 0)
+					auth = false
+					break
+				else
+					next
+				end
 			rescue NoMethodError
 				puts "Page still loading"
 			end
 		end
 		
 		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Get Prices Authentication", "pop-up"){
+			puts "auth = #{auth}"
 			if(auth)
+				puts "In auth"
 				for i in 0..config['loop_times_customer_search']
 					begin
 						session.driver.browser.switch_to.alert
