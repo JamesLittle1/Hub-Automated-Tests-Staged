@@ -431,22 +431,6 @@ def verbal (session, config)
 end
 
 def finish (session, config)
-	# Find another way to confirm that this went through
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "generate"){
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail").click
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_grdContracts_ctl00_ctl02_ctl00_ClientSelectSelectCheckBox").click
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_btnActionEmails").click
-	# })
-		# return false
-	# end
-	
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirmation Email", "send"){
-		# session.driver.browser.switch_to.alert.accept()
-		# puts "Email has been sent successfully!"
-	# })
-		# return false
-	# end
-	
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search'){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_ucConductSaleWizardActions_rdoEmail")
 		puts "Successfully made it to the Final Page"
