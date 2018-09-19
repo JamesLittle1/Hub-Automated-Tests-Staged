@@ -17,8 +17,8 @@ end
 
 def select_customer(session, config, pipeline=false, frame=false, override="")
 	if(override == "")
-		loop_times = 'loop_times_customer_search'
-		timeout_threshold = 'timeout_threshold_customer_search'
+		loop_times = 'loop_times_extended'
+		timeout_threshold = 'timeout_threshold_extended'
 	else
 		loop_times = 'loop_times_override'
 		timeout_threshold = 'timeout_threshold_override'
