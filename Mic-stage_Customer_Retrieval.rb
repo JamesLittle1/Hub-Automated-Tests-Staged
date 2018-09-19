@@ -96,15 +96,7 @@ end
 
 def confirm_customer(session, config, frame=false)
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer's page", "Load"){
-		if(frame)
-			doc = session.find(:id, "main-inner")['innerHTML']
-			if (doc.scan("Customer Number").count > 0)
-				puts "Customer page opened successfully!"
-				return true
-			elsif(doc.scan("Customer Number").count <= 0)
-				raise "The Customer could not be successfully retrieved."
-			end
-		else
+		begin
 			session.within_frame(0) do
 				doc = session.find(:id, "main-inner")['innerHTML']
 				if (doc.scan("Customer Number").count > 0)
@@ -113,6 +105,14 @@ def confirm_customer(session, config, frame=false)
 				elsif(doc.scan("Customer Number").count <= 0)
 					raise "The Customer could not be successfully retrieved."
 				end
+			end
+		rescue Capybara::ExpectationNotMet
+			doc = session.find(:id, "main-inner")['innerHTML']
+			if (doc.scan("Customer Number").count > 0)
+				puts "Customer page opened successfully!"
+				return true
+			elsif(doc.scan("Customer Number").count <= 0)
+				raise "The Customer could not be successfully retrieved."
 			end
 		end
 	})
