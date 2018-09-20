@@ -4,7 +4,7 @@ config = YAML.load_file("./config.yml")
 require 'terminal-table'
 
 # Finding all customers to work with
-client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
+client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_STAGED'], :password => ENV['PASSWORD_STAGED'])
 cust_ids = client.execute("SELECT CC.CustId FROM address.CustomerContact CC
   JOIN customer.Business B ON CC.CustId = B.CustId 
   WHERE FirstName = '#{config['first_name']}' AND LastName = '#{config['last_name']}' AND BusinessName = '#{config['business_name']}'")
@@ -12,14 +12,14 @@ cust_ids = client.execute("SELECT CC.CustId FROM address.CustomerContact CC
 # Deleting first in case already exist in table
 cust_ids.each do |cust_id|
 	sql = "DELETE FROM customer.CustomerMaintenance WHERE CustId IN (#{cust_id["CustId"]})"
-	client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
+	client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_STAGED'], :password => ENV['PASSWORD_STAGED'])
 	result = client.execute(sql)
 end
 
 # Inserting into table for deletion
 cust_ids.each do |cust_id|
 	sql1 = "INSERT INTO customer.CustomerMaintenance VALUES ((#{cust_id["CustId"]}),GETDATE(), NULL, 0, NULL)"
-	client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
+	client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_STAGED'], :password => ENV['PASSWORD_STAGED'])
 	result = client.execute(sql1)
 end
 
@@ -28,7 +28,7 @@ sql2 = "SELECT * FROM [Hub_Staging_Live2].[customer].[CustomerMaintenance]
 WHERE CustId IN (  SELECT CC.CustId FROM address.CustomerContact CC
   JOIN customer.Business B ON CC.CustId = B.CustId 
   WHERE FirstName = '#{config['first_name']}' AND LastName = '#{config['last_name']}' AND BusinessName = '#{config['business_name']}')"
-client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_SQL'], :password => ENV['PASSWORD_SQL'])
+client = TinyTds::Client.new(:dataserver => ENV['DATASERVER_STAGED'], :database => ENV['DATABASE_STAGED'], :username => ENV['USERNAME_STAGED'], :password => ENV['PASSWORD_STAGED'])
 result = client.execute(sql2)
 results = result.each(:symbolize_keys => true, :as => :array, :cache_rows => true, :empty_sets => true) do |rowset| end
 unless (results.nil? || results[0].nil?)
