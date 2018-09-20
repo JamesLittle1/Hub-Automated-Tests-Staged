@@ -226,13 +226,15 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 				if(session.html.scan(/style=\"transform: translate3d\([\d]+\.?[\d]*%/).count > 0)
 					auth = true
 					break
-				elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\)/).count > 0)
+				elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/).count > 0)
 					auth = false
+					puts "auth failed because of following errors:"
+					puts session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/)
 					break
 				else
 					next
 				end
-			rescue NoMethodError
+			rescue NoMethodError, Capybara::ElementNotFound
 				puts "Page still loading"
 			end
 		end
