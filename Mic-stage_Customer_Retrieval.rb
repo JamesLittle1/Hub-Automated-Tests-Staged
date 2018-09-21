@@ -1,6 +1,6 @@
 # Method to search for all customers
 def search_customers(session, config, input1="", input2="")
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Homepage", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Homepage", "load"){
 		begin
 			session.click_link("Search")
 			session.accept_alert do
@@ -90,11 +90,11 @@ def press_search(session, config, pipeline, override)
 		session.find(:id, "ctl00_MainArea_btnSearch").click
 		sleep(1) #just to ensure that javascript load starts before we look for it
 	})
-		return false
+		raise "Could not press search"
 	end
 end
 
-def confirm_customer(session, config, frame=false)
+def confirm_customer(session, config)
 	if(!wait_for_page_to_load(session, config, 'loop_times_customer_search', 'timeout_threshold_customer_search', "Customer's page", "Load"){
 		begin
 			session.within_frame(0) do

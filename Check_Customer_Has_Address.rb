@@ -45,7 +45,7 @@ def add_address(session, config)
 	dropdown = session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_DropDown")['innerHTML']
 	if(dropdown.scan(/<li/).count > 1)
 		puts "Adding address officially"
-		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Address added to dropdown", "select"){
+		if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Address added to dropdown", "select"){
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue015")
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_cmbAddresses_Input").send_keys("\ue006")
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
@@ -56,7 +56,7 @@ def add_address(session, config)
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Address Move-in Date", "fill in"){
+		if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Address Move-in Date", "fill in"){
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_popupButton").click
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_rptAddresses_ctl02_ucMntAddress_dpMoveInDate_calendar_Title").click
 			session.find(:id, "rcMView_PrevY").click
@@ -72,7 +72,7 @@ def add_address(session, config)
 	else
 		# If not then fill in new address
 		puts "Filling in new address"
-		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Address Search", "load"){
+		if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Address Search", "load"){
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses")
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").native.clear
 			session.find(:id, "ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_txtPostCode_text").send_keys("SM4 5BE")
@@ -84,7 +84,7 @@ def add_address(session, config)
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Address Checkbox", "click"){
+		if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Address Checkbox", "click"){
 			session.check("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_grdSearchResults_ctl00_ctl22_ClientSelectColumnSelectCheckBox")
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnUseSelected")
 		})
@@ -94,7 +94,7 @@ def add_address(session, config)
 		while (session.html.scan(/ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_RadAjaxPanel1/).count > 0)
 			#Waiting for page to load
 		end
-		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Address", "save"){
+		if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Address", "save"){
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_ucAddressGBSearch_btnSaveAddressDetailsUC")
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnSave")
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnClose")
@@ -106,7 +106,7 @@ def add_address(session, config)
 end
 
 def check(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Address check", "run"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Customer Address check", "run"){
 		session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_imgContactEdit").click
 		if(!session.has_css?("#ctl00_MainArea_ucMntCustomerContact_ucMntContactAddresses_btnAddAddresses"))
 			session.find("#ctl00_MainArea_ucMntCustomerContact_pnlAddresses > div:nth-child(1)").click # <- Problem code

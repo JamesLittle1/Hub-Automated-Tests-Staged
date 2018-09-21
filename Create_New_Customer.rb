@@ -20,14 +20,14 @@ if(!search_customers(session, config, ARGV[0], ARGV[1]))
 end
 
 def open_new_customer_screen(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Customer page", "load"){
 		session.within_frame(0) do
 			session.click_button("New Opportunity")
 		end
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer popup", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Customer popup", "load"){
 		session.within_frame(0) do
 			session.click_button("OK")
 		end
@@ -44,7 +44,7 @@ def new_customer_screen(session, config)
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Customer page", "load"){
 		session.within_frame(0) do
 			session.within_frame(0) do
 				session.find(:id, "Salutation").send_keys("\ue015")
@@ -61,7 +61,7 @@ def new_customer_screen(session, config)
 		return false
 	end
 	#Check that search has worked, else search again
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Search Check", "run"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Search Check", "run"){
 		session.within_frame(0) do
 			session.within_frame(0) do
 				if(session.find(:id, "qualificationContainer")['innerHTML'].scan("A value is required").count > 0)
@@ -97,7 +97,7 @@ def new_customer_screen(session, config)
 end
 
 def create_new_business(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Customer Search", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Customer Search", "load"){
 		session.within_frame(0) do
 			session.within_frame(0) do
 				session.click_button("create-business-button")
@@ -106,7 +106,7 @@ def create_new_business(session, config)
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "New Business section", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "New Business section", "load"){
 		session.within_frame(0) do
 			session.within_frame(0) do
 				session.find(:id, "AddressLine1").send_keys(config['address_line_1'])
@@ -134,7 +134,7 @@ def use_existing_business(session, config)
 		end
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Progress Open Opportunities", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Progress Open Opportunities", "load"){
 		session.within_frame(0) do
 			session.within_frame(0) do
 				session.find(:id, "open-opportunity-results").find(:id, "0").click
@@ -176,7 +176,7 @@ end
 # end
 
 def confirm_customer_quote_page(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Quote page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Quote page", "load"){
 		session.within_frame(0) do
 			doc = session.find(:id, "ctl00_MainArea_lblOppId")['innerHTML']
 			if(doc.scan(/#{config['FirstName']}.*#{config['LastName']}/).count > 0)

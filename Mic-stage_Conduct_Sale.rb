@@ -1,5 +1,5 @@
 def conduct_sale_load (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Conduct Sale", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Conduct Sale", "load"){
 		session.find(:id, "ctl00_MainArea_repActionControls_ctl02_lbPageAction").click
 	})
 		return false
@@ -9,7 +9,7 @@ end
 
 def check_for_records (session, config)
 	run_quote = false
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "check_for_records", "run"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "check_for_records", "run"){
 		doc = session.find(:id, "ctl00_MainArea_wzrdConductSale_rptBusiness_ctl00_ucBusinessQuotes_grdQuotes_GridData")['innerHTML']
 		if(doc.scan("No records to display").count > 0)
 			run_quote = true
@@ -63,7 +63,7 @@ def check_for_records (session, config)
 end
 
 def select_quote (session, config, prod)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Select Quote page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Select Quote page", "load"){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_rptBusiness_ctl00_ucBusinessQuotes_imbbusinessSelect").click
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_rptBusiness_ctl00_ucBusinessQuotes_grdQuotes_ctl00")['innerHTML'].scan(/ctl00_MainArea_wzrdConductSale_rptBusiness_ctl00_ucBusinessQuotes_grdQuotes_ctl00_ct.{1,3}_cbSelect/).each do |checkbox_id|
 			checkbox = session.find(:id, checkbox_id)
@@ -101,7 +101,7 @@ def confirm_quote (session, config, input1="", input2="")
 	end
 	
 	# Now deal with Confirm Quote tab
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Confirm Quote page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Confirm Quote page", "load"){
 		session.choose("ctl00_MainArea_wzrdConductSale_radioSavingsConfirmation_0")
 		session.click_button("ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton")
 	})
@@ -111,7 +111,7 @@ def confirm_quote (session, config, input1="", input2="")
 end
 
 def additional_data (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Additional Company Details", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Additional Company Details", "load"){
 		session.find(:id, "HeaderAddCompanyDetails").click
 		session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_ucMntBusiness_btnSave")
 		# If error displays...
@@ -134,13 +134,13 @@ def additional_data (session, config)
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Business Representative Details", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Business Representative Details", "load"){
 		session.find(:id, "HeaderCompanyDirector").click
 		session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_ucMntContactDetailsOwnerDirector_btnSave")
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Bank Account Details", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Bank Account Details", "load"){
 		session.find(:id, "HeaderBankAccounts").click
 		# Try to save bank account
 		begin
@@ -196,13 +196,13 @@ def additional_data (session, config)
 	while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep\d\"/).count > 0)
 		#Waiting for page to load
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Supply/Billing Address Details", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Supply/Billing Address Details", "load"){
 		session.find(:id, "HeaderAddresses").click
 		session.click_button("ctl00_MainArea_wzrdConductSale_ucAdditionalData_btnSaveAddresses")
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Major Business Details", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Major Business Details", "load"){
 		begin
 			session.find(:id, "HeaderMajorBusinessDetails").click
 			session.find(:id, "ctl00_MainArea_wzrdConductSale_ucAdditionalData_rptMajorBusiness_ctl00_MajorBusinessDetails_yieldOfSale_text").send_keys("0")
@@ -225,20 +225,20 @@ end
 
 def summary (session, config)
 	load_attempts = 0
-	for i in 0..config['loop_times']
-		sleep(config['timeout_threshold'])
+	for i in 0..config['loop_times_short']
+		sleep(config['timeout_threshold_short'])
 		begin
 			#Capture Landline Telephone Number
 			cltn = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Capture Landline Telephone Number.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
 			if(cltn.count > 0)
 				id = cltn[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Landline Telephone Number tick", "fill in"){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Capture Landline Telephone Number tick", "fill in"){
 						session.click_button(id[4..-2])
 						session.find(:id, id[4..-11] + "txtLandline_text").native.clear
 						session.find(:id, id[4..-11] + "txtLandline_text").send_keys(config['landline'])
 					}
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
 						session.click_button(id[4..-11] + "btnSaveLandline")
 					}
 				end
@@ -252,10 +252,10 @@ def summary (session, config)
 			if(cdob.count > 0)
 				id = cdob[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Date Of Birth tick", "fill in"){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Capture Date Of Birth tick", "fill in"){
 						session.click_button(id[4..-2])
 					}
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
 						session.click_button(id[4..-11] + "btnSaveDoB")
 					}
 				end
@@ -268,12 +268,12 @@ def summary (session, config)
 			if(cha.count > 0)
 				id = cha[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.emoty?)
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Capture Home Address tick", "fill in"){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Capture Home Address tick", "fill in"){
 						session.click_button(id[4..-2])
 						session.find(:id, id[4..-11] + "ucMntContactAddresses_rptAddresses_ctl01_ucMntAddress_cmbType_Arrow").click
 						
 					}
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
 						session.click_button(id[4..-11] + "btnSaveAddresses")
 					}
 				end
@@ -287,7 +287,7 @@ def summary (session, config)
 			if(dify.count > 0)
 				id = dify[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "DIFY tick", "fill in"){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "DIFY tick", "fill in"){
 						session.click_button(id[4..-2])
 						session.find(:id, id[4..-11] + "cmbRenewForYou_Input").click
 						begin
@@ -296,7 +296,7 @@ def summary (session, config)
 							session.find(:xpath, "/html/body/form/div[2]/div/div/ul/li[3]").click
 						end
 					}
-					wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold'){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
 						session.click_button(id[4..-11] + "btnRenewForYou")
 					}
 				end
@@ -322,8 +322,8 @@ def summary (session, config)
 			break
 		rescue
 			load_attempts += 1
-			if (load_attempts > (config['timeout_threshold']*config['loop_times'] - 1))
-				puts "Summary page failed to load within #{config['timeout_threshold']*config['loop_times']} seconds."
+			if (load_attempts > (config['timeout_threshold_short']*config['loop_times_short'] - 1))
+				puts "Summary page failed to load within #{config['timeout_threshold_short']*config['loop_times_short']} seconds."
 				return false
 			end
 		end
@@ -332,7 +332,7 @@ def summary (session, config)
 end
 
 def preferences (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Preferences page", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Preferences page", "load"){
 		if(session.has_css?("html body#main form#aspnetForm div#main-outer div#main-inner div.clear table#ctl00_MainArea_wzrdConductSale tbody tr td table tbody tr td div#ctl00_MainArea_wzrdConductSale_ctl00_MainArea_wzrdConductSale_RadAjaxPanelQuestionsPanel div#ctl00_MainArea_wzrdConductSale_RadAjaxPanelQuestions div#ctl00_MainArea_wzrdConductSale_ucQuestions_pnlQuestionsEle div.lightest-bg.frame div.form-row div.section.margin_b div.light-bg.margin-bottom div.light-bg.margin-bottom div#ctl00_MainArea_wzrdConductSale_ucQuestions_rptQuestionsElec_ctl00_singleQuestion_pnlCmbQuestion div.form-row-first div div#ctl00_MainArea_wzrdConductSale_ucQuestions_rptQuestionsElec_ctl00_singleQuestion_cmbAnswer.RadComboBox.RadComboBox_Vista table.rcbFocused tbody tr.rcbReadOnly td.rcbInputCell.rcbInputCellLeft input#ctl00_MainArea_wzrdConductSale_ucQuestions_rptQuestionsElec_ctl00_singleQuestion_cmbAnswer_Input.rcbInput"))
 			session.find(:id, "ctl00_MainArea_wzrdConductSale_ucQuestions_rptQuestionsElec_ctl00_singleQuestion_cmbAnswer_Input").click
 			begin
@@ -353,36 +353,6 @@ def preferences (session, config)
 end
 
 def verbal (session, config)
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract page", "load"){
-		# session.click_button("Verbal Contract")
-	# })
-		# return false
-	# end
-	
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "generate"){
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStart").click
-	# })
-		# return false
-	# end
-	
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "play"){
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btnStop").click
-	# })
-		# return false
-	# end
-	
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract confirmation", "load"){
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_radWdwConfirm_C_btnConfirm").click
-	# })
-		# return false
-	# end
-	
-	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal Contract", "confirm"){
-		# session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
-	# })
-		# return false
-	# end
-	
 	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal tab", "load"){
 		wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
 			session.click_button("EContract")
@@ -392,7 +362,7 @@ def verbal (session, config)
 		return false
 	end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "preview"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "EContract", "preview"){
 		session.click_button("Send")
 	})
 		return false
@@ -412,21 +382,11 @@ def verbal (session, config)
 			# break
 		# end
 	# end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "EContract", "send"){
 		session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
 	})
 		return false
 	end
-	
-	# if(!wait_for_econtract_to_send(session, config, 'loop_times', 'timeout_threshold', "EContract", "send"){
-		# begin
-			# session.find(:id, "ctl00_MainArea_wzrdConductSale_ucVerbals_rptVerbal_ctl00_ucVerbal_btn_EContractSend")
-		# rescue Capybara::ElementNotFound
-			# session.find(:id, "ctl00_MainArea_wzrdConductSale_StepNavigationTemplateContainerID_StepNextButton").click
-		# end
-	# })
-		# return false
-	# end
 	return true
 end
 

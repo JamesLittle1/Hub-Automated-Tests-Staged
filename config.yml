@@ -1,5 +1,7 @@
 loop_times: 15
 timeout_threshold: 1
+loop_times_short: 10
+timeout_threshold_short: 1
 loop_times_customer_search: 30
 timeout_threshold_customer_search: 1
 loop_times_extended: 45

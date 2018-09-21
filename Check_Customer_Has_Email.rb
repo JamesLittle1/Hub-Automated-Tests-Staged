@@ -33,7 +33,7 @@ def check_customer_has_email(session, config)
 end
 
 def fill_in_email(session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Edit Contact Information", "load"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Edit Contact Information", "load"){
 		begin
 			session.click_button("ctl00_MainArea_ucMntCustomerContact_btnAddEmails")
 		rescue Capybara::ElementNotFound => e
@@ -45,7 +45,7 @@ def fill_in_email(session, config)
 	})
 		return false
 	end
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Email", "save"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Email", "save"){
 		session.click_button("ctl00_MainArea_ucMntCustomerContact_btnClose")
 	})
 		return false
@@ -64,7 +64,7 @@ def fill_in_email(session, config)
 end
 
 def check(session, config, no_email)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "check_customer_has_email", "run"){
+	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "check_customer_has_email", "run"){
 		session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_Input").click
 		if(session.find(:id, "ctl00_MainArea_ProspectPageMailInfo1_cmbEmail_DropDown")['innerHTML'].scan(config['email']).count == 0)
 			no_email[0] = true
