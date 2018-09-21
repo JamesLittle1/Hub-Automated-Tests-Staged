@@ -8,7 +8,7 @@ def wait_for_page_to_load(session, config, loop_times, timeout_threshold, noun="
 				puts "Waited #{i + 1} second(s) for " + noun + " to " + verb + "."
 			end
 			break
-		rescue Capybara::ElementNotFound, RuntimeError, Selenium::WebDriver::Error::ElementClickInterceptedError
+		rescue Capybara::ElementNotFound, RuntimeError, Selenium::WebDriver::Error::ElementClickInterceptedError, NoMethodError
 			load_attempts += 1
 			if(load_attempts > (config[loop_times] - 1))
 				if(noun != "" || verb != "")
