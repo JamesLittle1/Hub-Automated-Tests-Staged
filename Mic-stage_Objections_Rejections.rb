@@ -3,6 +3,10 @@ class CheckType
 	REJECTIONS = "Rejections"
 	UNRESOLVED = "Unresolved"
 	NEW = "New"
+	TOTAL = "Total"
+	DIFY = "DIFY"
+	SME = "SME"
+	MB = "MB"
 	
 	class << self
 		def objections
@@ -16,6 +20,18 @@ class CheckType
 		end
 		def new
 			NEW
+		end
+		def total
+			TOTAL
+		end
+		def dify
+			DIFY
+		end
+		def sme
+			SME
+		end
+		def mb
+			MB
 		end
 		def checking_objections_rejections(input)
 			if(input == OBJECTIONS || input == REJECTIONS)
@@ -31,16 +47,26 @@ class CheckType
 				return false
 			end
 		end
+		def checking_total_dify_sme_mb(input)
+			if(input == TOTAL || input == DIFY || input == SME || input == MB)
+				return true
+			else
+				return false
+			end
+		end
+		def check(input)
+			if(input == DIFY || input == SME || input == MB)
+				return true
+			else
+				return false
+			end
+		end
 	end
 end
 
-def search_objections_rejections(session, config, type1, type2)
-	if(!CheckType.checking_objections_rejections(type1))
-		puts "Input 3 not an objection or rejection"
-		return false
-	end
-	if(!CheckType.checking_new_unresolved(type2))
-		puts "Input 4 not new or unresolved"
+def search_objections_rejections(session, config, type1, type2, type3, ret)
+	if(!CheckType.checking_total_dify_sme_mb(type3))
+		puts "Input 5 not in {total, DIFY, SME, MB}"
 		return false
 	end
 	
@@ -49,47 +75,20 @@ def search_objections_rejections(session, config, type1, type2)
 	})
 		return false
 	end
-	# Find Total
-	total = find_regex(session, config, type1)
-	# Find DIFY
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{type1}: #{type2} DIFY search", "load"){
-		session.within_frame(0) do
-			session.choose("DIFY")
-			session.click_button("Search")
+	
+	# Find Total/DIFY/SME/MB
+	if(CheckType.check(type3))
+		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{type1}: #{type2} #{type3} search", "load"){
+			session.within_frame(0) do
+				session.choose(type3)
+				session.click_button("Search")
+			end
+		})
+			return false
 		end
-	})
-		return false
 	end
-	dify = find_regex(session, config, type1)
-	# Find SME
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{type1}: #{type2} SME search", "load"){
-		session.within_frame(0) do
-			session.choose("SME")
-			session.click_button("Search")
-		end
-	})
-		return false
-	end
-	sme = find_regex(session, config, type1)
-	# Find MB
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{type1}: #{type2} MB search", "load"){
-		session.within_frame(0) do
-			session.choose("MB")
-			session.click_button("Search")
-		end
-	})
-		return false
-	end
-	mb = find_regex(session, config, type1)
-	if(total == (dify + sme + mb))
-		puts "Test passed! Total Unresolved Objections = DIFY + SME + MB"
-		puts "#{total} == #{dify} + #{sme} + #{mb}"
-		return true
-	else
-		puts "Test Failed!"
-		puts "#{total} != #{dify} + #{sme} + #{mb}"
-		return false
-	end
+	ret[type3] = find_regex(session, config, type1)
+	return true
 end
 
 def find_regex(session, config, type1)
