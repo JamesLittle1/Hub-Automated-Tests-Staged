@@ -13,14 +13,14 @@ session1 = Capybara::Session.new :selenium_firefox
 session2 = Capybara::Session.new :selenium_firefox
 session3 = Capybara::Session.new :selenium_firefox
 
-type1 = CheckType.send(ARGV[2].to_sym)
-type2 = CheckType.send(ARGV[3].to_sym)
+type1 = Type1.send(ARGV[2].to_sym)
+type2 = Type2.send(ARGV[3].to_sym)
 ret = {"Total" => 0, "DIFY" => 0, "SME" => 0, "MB" => 0}
-if(!CheckType.checking_objections_rejections(type1))
+if(!Type1.checking_objections_rejections(type1))
 	puts "Input 3 not an objection or rejection"
 	exit -1
 end
-if(!CheckType.checking_new_unresolved(type2))
+if(!Type2.checking_new_unresolved(type2))
 	puts "Input 4 not new or unresolved"
 	exit -1
 end
@@ -31,7 +31,7 @@ total = Thread.new{
 		puts "Failed to log onto Hub"
 		exit -1
 	end
-	if(!search_objections_rejections(session, config, type1, type2, CheckType.send(:total), ret))
+	if(!search_objections_rejections(session, config, type1, type2, Type3.send(:total), ret))
 		puts "Failed to successfully complete search_unresolved_objections."
 		exit -1
 	end
@@ -42,7 +42,7 @@ dify = Thread.new{
 		puts "Failed to log onto Hub"
 		exit -1
 	end
-	if(!search_objections_rejections(session1, config, type1, type2, CheckType.send(:dify), ret))
+	if(!search_objections_rejections(session1, config, type1, type2, Type3.send(:dify), ret))
 		puts "Failed to successfully complete search_unresolved_objections."
 		exit -1
 	end
@@ -53,7 +53,7 @@ sme = Thread.new{
 		puts "Failed to log onto Hub"
 		exit -1
 	end
-	if(!search_objections_rejections(session2, config, type1, type2, CheckType.send(:sme), ret))
+	if(!search_objections_rejections(session2, config, type1, type2, Type3.send(:sme), ret))
 		puts "Failed to successfully complete search_unresolved_objections."
 		exit -1
 	end
@@ -64,7 +64,7 @@ mb = Thread.new{
 		puts "Failed to log onto Hub"
 		exit -1
 	end
-	if(!search_objections_rejections(session3, config, type1, type2, CheckType.send(:mb), ret))
+	if(!search_objections_rejections(session3, config, type1, type2, Type3.send(:mb), ret))
 		puts "Failed to successfully complete search_unresolved_objections."
 		exit -1
 	end

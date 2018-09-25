@@ -1,12 +1,6 @@
-class CheckType
+class Type1
 	OBJECTIONS = "Objections"
 	REJECTIONS = "Rejections"
-	UNRESOLVED = "Unresolved"
-	NEW = "New"
-	TOTAL = "Total"
-	DIFY = "DIFY"
-	SME = "SME"
-	MB = "MB"
 	
 	class << self
 		def objections
@@ -15,12 +9,45 @@ class CheckType
 		def rejections
 			REJECTIONS
 		end
+		def checking_objections_rejections(input)
+			if(input == OBJECTIONS || input == REJECTIONS)
+				return true
+			else
+				return false
+			end
+		end
+	end
+end
+
+class Type2
+	UNRESOLVED = "Unresolved"
+	NEW = "New"
+	
+	class << self
 		def unresolved
 			UNRESOLVED
 		end
 		def new
 			NEW
 		end
+		
+		def checking_new_unresolved(input)
+			if(input == NEW || input == UNRESOLVED)
+				return true
+			else
+				return false
+			end
+		end
+	end
+end
+
+class Type3
+	TOTAL = "Total"
+	DIFY = "DIFY"
+	SME = "SME"
+	MB = "MB"
+	
+	class << self
 		def total
 			TOTAL
 		end
@@ -33,20 +60,7 @@ class CheckType
 		def mb
 			MB
 		end
-		def checking_objections_rejections(input)
-			if(input == OBJECTIONS || input == REJECTIONS)
-				return true
-			else
-				return false
-			end
-		end
-		def checking_new_unresolved(input)
-			if(input == NEW || input == UNRESOLVED)
-				return true
-			else
-				return false
-			end
-		end
+		
 		def checking_total_dify_sme_mb(input)
 			if(input == TOTAL || input == DIFY || input == SME || input == MB)
 				return true
@@ -65,7 +79,7 @@ class CheckType
 end
 
 def search_objections_rejections(session, config, type1, type2, type3, ret)
-	if(!CheckType.checking_total_dify_sme_mb(type3))
+	if(!Type3.checking_total_dify_sme_mb(type3))
 		puts "Input 5 not in {total, DIFY, SME, MB}"
 		return false
 	end
@@ -77,7 +91,7 @@ def search_objections_rejections(session, config, type1, type2, type3, ret)
 	end
 	
 	# Find Total/DIFY/SME/MB
-	if(CheckType.check(type3))
+	if(Type3.check(type3))
 		if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "#{type1}: #{type2} #{type3} search", "load"){
 			session.within_frame(0) do
 				session.choose(type3)
