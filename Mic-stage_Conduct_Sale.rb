@@ -353,11 +353,9 @@ def preferences (session, config)
 end
 
 def verbal (session, config)
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal tab", "load"){
-		wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
-			session.click_button("EContract")
-			session.driver.browser.switch_to.alert.accept()
-		}
+	if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Verbal tab", "load"){
+		session.click_button("EContract")
+		session.driver.browser.switch_to.alert.accept()
 	})
 		return false
 	end

@@ -8,7 +8,7 @@ def wait_for_authentication_to_load(session, config, loop_times, timeout_thresho
 				puts "Waited #{i + 1} second(s) for " + noun + " to " + verb + "."
 			end
 			break
-		rescue Selenium::WebDriver::Error::NoSuchAlertError, Capybara::ModalNotFound
+		rescue Selenium::WebDriver::Error::NoSuchAlertError, Capybara::ModalNotFound, Capybara::ElementNotFound, RuntimeError, Selenium::WebDriver::Error::ElementClickInterceptedError, NoMethodError
 			load_attempts += 1
 			if(load_attempts > (config[loop_times] - 1))
 				if(noun != "" || verb != "")

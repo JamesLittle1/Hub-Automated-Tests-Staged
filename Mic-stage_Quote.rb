@@ -125,19 +125,19 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Meter Results", "load"){
 			session.find(:id, "ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl07_GECBtnExpandColumn").click
 		}
-		wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Meter Result", "Expand"){
-			wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold'){
-				session.accept_alert do
-					case prod
-						when Products.send(:electricity)
-							session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail20_ctl04_btnAddMPAN")
-						when Products.send(:gas)
-							session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail21_ctl04_btnAddMPR")
-					end
-					#session.driver.browser.switch_to.alert.accept()
+		if(!wait_for_authentication_to_load(session, config, 'loop_times', 'timeout_threshold', "Meter Result", "Expand"){
+			session.accept_alert do
+				case prod
+					when Products.send(:electricity)
+						session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail20_ctl04_btnAddMPAN")
+					when Products.send(:gas)
+						session.click_button("ctl00_MainArea_wzrdQuoting_ucSearchGBUtilities_grdSearch_ctl00_ctl09_Detail21_ctl04_btnAddMPR")
 				end
-			}
-		}
+				#session.driver.browser.switch_to.alert.accept()
+			end
+		})
+			return false
+		end
 		create_new[0] = false
 	end
 	session.click_link(prod)
