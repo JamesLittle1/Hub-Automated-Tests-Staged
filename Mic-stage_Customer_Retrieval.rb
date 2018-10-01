@@ -75,15 +75,15 @@ def press_search(session, config, pipeline, override)
 			session.find(:id, "ctl00_MainArea_txtFirstName_text").native.clear
 			session.find(:id, "ctl00_MainArea_txtLastName_text").native.clear
 			session.find(:id, "ctl00_MainArea_txtPostCode_text").native.clear
+			session.find(:id, "ctl00_MainArea_txtPhone_text").native.clear
+			session.find(:id, "ctl00_MainArea_txtBusinessName_text").send_keys(config['business_name'])
+			session.find(:id, "ctl00_MainArea_txtFirstName_text").send_keys(config['first_name'])
+			session.find(:id, "ctl00_MainArea_txtLastName_text").send_keys(config['last_name'])
+			session.find(:id, "ctl00_MainArea_txtPostCode_text").send_keys(config['postcode'])
 			if(override == "")
-				session.find(:id, "ctl00_MainArea_txtBusinessName_text").send_keys(config['business_name'])
-				session.find(:id, "ctl00_MainArea_txtFirstName_text").send_keys(config['first_name'])
-				session.find(:id, "ctl00_MainArea_txtLastName_text").send_keys(config['last_name'])
-				session.find(:id, "ctl00_MainArea_txtPostCode_text").send_keys(config['postcode'])
+				session.find(:id, "ctl00_MainArea_txtPhone_text").send_keys(config['landline'])
 			else
-				session.find(:id, "ctl00_MainArea_txtBusinessName_text").send_keys(override)
-				session.find(:id, "ctl00_MainArea_txtFirstName_text").send_keys(override)
-				session.find(:id, "ctl00_MainArea_txtLastName_text").send_keys(override)
+				session.find(:id, "ctl00_MainArea_txtPhone_text").send_keys(override)
 			end
 			pipeline = false
 		end

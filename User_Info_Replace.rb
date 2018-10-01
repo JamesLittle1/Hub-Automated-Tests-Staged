@@ -19,16 +19,19 @@ if(!search_customers(session, config, ARGV[0], ARGV[1]))
 	puts "Search_customers failed"
 	exit -1
 end
-if(!select_customer(session, config, true, false, "First"))
-	puts "No First user, starting from the beginning again!"
+if(!select_customer(session, config, true, false, "02087878787"))
+	puts "No First customer, starting from the beginning again!"
 	count = false
 end
 
-array = ["\"First\"", "\"Second\"", "\"Third\"", "\"Fourth\"", "\"Fifth\"", "\"Sixth\"", "\"Seventh\"", "\"Eighth\"", "\"Ninth\"", "\"Tenth\"",
-"\"BB\"", "\"CC\"", "\"DD\"", "\"EE\"", "\"FF\"", "\"HH\"", "\"II\"", "\"JJ\"", "\"KK\"", "\"LL\"", "\"MM\"", "\"NN\"", "\"OO\"", "\"PP\"",
-"\"QQ\"", "\"RR\"", "\"SS\"", "\"TT\"", "\"UU\"", "\"VV\"", "\"WW\"", "\"XX\"", "\"YY\"", "\"ZZ\""]
+# array = ["\"First\"", "\"Second\"", "\"Third\"", "\"Fourth\"", "\"Fifth\"", "\"Sixth\"", "\"Seventh\"", "\"Eighth\"", "\"Ninth\"", "\"Tenth\"",
+# "\"BB\"", "\"CC\"", "\"DD\"", "\"EE\"", "\"FF\"", "\"HH\"", "\"II\"", "\"JJ\"", "\"KK\"", "\"LL\"", "\"MM\"", "\"NN\"", "\"OO\"", "\"PP\"",
+# "\"QQ\"", "\"RR\"", "\"SS\"", "\"TT\"", "\"UU\"", "\"VV\"", "\"WW\"", "\"XX\"", "\"YY\"", "\"ZZ\""]
+array = ["\"02087878787\"", "\"02087878788\"", "\"02087878789\"", "\"02087878790\"", "\"02087878791\"", "\"02087878792\"", "\"02087878793\"", 
+"\"02087878794\"", "\"02087878795\"", "\"02087878796\"", "\"02087878797\"", "\"02087878798\"", "\"02087878799\"", "\"02087878800\"", "\"02087878801\"", 
+"\"02087878802\"", "\"02087878803\"", "\"02087878804\"", "\"02087878805\"", "\"02087878806\""]
 yaml_content = File.read(file_name)
-current = yaml_content.scan(/first_name: \".*\"/)[0][12..-1]
+current = yaml_content.scan(/landline: \".*\"/)[0][10..-1]
 if(count)
 	i = array.index(current)
 	new_content = yaml_content.gsub(current, array[array.index(current) + 1]) # will raise an error if runs out of options
