@@ -34,38 +34,63 @@ def select_customer(session, config, pipeline=false, frame=false, override="")
 	
 	if(!wait_for_page_to_load(session, config, loop_times, timeout_threshold, "Search Customers results", "load"){
 		if(frame)
-			if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
-				raise "page is still loading"
-			end
-			if(session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan("There are no items to display.").count > 0)
-				puts "No items returned from search - try again"
-				press_search(session, config, pipeline, override)
-			end
-			session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-			begin
-				session.click_button("View")
-			rescue Net::ReadTimeout
-			end
+			# if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
+				# raise "page is still loading"
+			# end
+			# if(session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan("There are no items to display.").count > 0)
+				# puts "No items returned from search - try again"
+				# press_search(session, config, pipeline, override)
+			# end
+			# cust_ids = session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan(/C\d\d\d\d\d\d/)
+			# number = cust_ids.count - 1
+			# session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__#{number}").click
+			# begin
+				# session.click_button("View")
+			# rescue Net::ReadTimeout
+			# end
+			press_search_again_if_not_loaded(session, config, pipeline, override)
 		else
 			session.within_frame(0) do
-				if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
-					raise "page is still loading"
-				end
-				if(session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan("There are no items to display.").count > 0)
-					puts "No items returned from search - try again"
-					press_search(session, config, pipeline, override)
-				end
-				session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
-				begin
-					session.click_button("View")
-				rescue Net::ReadTimeout
-				end
+				# if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
+					# raise "page is still loading"
+				# end
+				# if(session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan("There are no items to display.").count > 0)
+					# puts "No items returned from search - try again"
+					# press_search(session, config, pipeline, override)
+				# end
+				# session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__0").click
+				# begin
+					# session.click_button("View")
+				# rescue Net::ReadTimeout
+				# end
+				press_search_again_if_not_loaded(session, config, pipeline, override)
 			end
 		end
 	})
 		return false
 	end
 	return true
+end
+
+def press_search_again_if_not_loaded(session, config, pipeline, override)
+	if(session.has_css?("html body#main div#ctl00_MainArea_RadAjaxLoadingPanel1ctl00_MainArea_grdSearchResults.RadAjax.RadAjax_Default"))
+		raise "page is still loading"
+	end
+	if(session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan("There are no items to display.").count > 0)
+		puts "No items returned from search - try again"
+		press_search(session, config, pipeline, override)
+	end
+	cust_ids = session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00")['innerHTML'].scan(/C\d\d\d\d\d\d/)
+	if(cust_ids.count > 0)
+		number = cust_ids.count - 1
+	else
+		number = 0
+	end
+	session.find(:id, "ctl00_MainArea_grdSearchResults_ctl00__#{number}").click
+	begin
+		session.click_button("View")
+	rescue Net::ReadTimeout
+	end
 end
 
 def press_search(session, config, pipeline, override)
