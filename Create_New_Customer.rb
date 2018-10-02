@@ -74,26 +74,26 @@ def new_customer_screen(session, config)
 	end
 	
 	# Figure out if we have to use existing user
-	create_new = true
-	if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Search", "load"){
-		session.within_frame(0) do
-			session.within_frame(0) do
-				if(session.find(:id, "business-results")['innerHTML'].scan("Perfect Match").count > 0)
-					create_new = false
-					break
-				elsif(session.find(:id, "business-results")['innerHTML'].scan(Regexp.union(/Bronze/, /Silver/, /Gold/)).count > 0 || session.find(:id, "business-search-results")['innerHTML'].scan("No matches found").count > 0)
-					break
-				end
-			end
-		end
-	})
-		return false
-	end
-	if(create_new)
+	# create_new = true
+	# if(!wait_for_page_to_load(session, config, 'loop_times', 'timeout_threshold', "Customer Search", "load"){
+		# session.within_frame(0) do
+			# session.within_frame(0) do
+				# if(session.find(:id, "business-results")['innerHTML'].scan("Perfect Match").count > 0)
+					# create_new = false
+					# break
+				# elsif(session.find(:id, "business-results")['innerHTML'].scan(Regexp.union(/Bronze/, /Silver/, /Gold/)).count > 0 || session.find(:id, "business-search-results")['innerHTML'].scan("No matches found").count > 0)
+					# break
+				# end
+			# end
+		# end
+	# })
+		# return false
+	# end
+	# if(create_new)
 		return create_new_business(session, config)
-	else
-		return use_existing_business(session, config)
-	end
+	# else
+		# return use_existing_business(session, config)
+	# end
 end
 
 def create_new_business(session, config)
@@ -126,30 +126,30 @@ def create_new_business(session, config)
 	return true
 end
 
-def use_existing_business(session, config)
-	session.within_frame(0) do
-		session.within_frame(0) do
-			session.first('td', text: "Perfect Match").click
-			session.click_button("use-existingbusiness-button")
-		end
-	end
+# def use_existing_business(session, config)
+	# session.within_frame(0) do
+		# session.within_frame(0) do
+			# session.first('td', text: "Perfect Match").click
+			# session.click_button("use-existingbusiness-button")
+		# end
+	# end
 	
-	if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Progress Open Opportunities", "load"){
-		session.within_frame(0) do
-			session.within_frame(0) do
-				session.find(:id, "open-opportunity-results").find(:id, "0").click
-				session.click_button("select-progress-button")
-			end
-		end
-	})
-		return false
-	end
-	if(!confirm_customer(session, config))
-		puts "Could not confirm customer"
-		return false
-	end
-	return true
-end
+	# if(!wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Progress Open Opportunities", "load"){
+		# session.within_frame(0) do
+			# session.within_frame(0) do
+				# session.find(:id, "open-opportunity-results").find(:id, "0").click
+				# session.click_button("select-progress-button")
+			# end
+		# end
+	# })
+		# return false
+	# end
+	# if(!confirm_customer(session, config))
+		# puts "Could not confirm customer"
+		# return false
+	# end
+	# return true
+# end
 
 # def if_quote_then_back(session, config)
 	# ret = false
