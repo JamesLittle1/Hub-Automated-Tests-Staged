@@ -286,11 +286,28 @@ def summary (session, config)
 			if (ddd.count > 0)
 				id = ddd[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
 				if(!id.nil? && !id.empty?)
-					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Capture Home Address tick", "fill in"){
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Direct Debit Day tick", "fill in"){
 						session.click_button(id[4..-2])
 					}
 					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
 						session.click_button(id[4..-11] + "btnSaveDDDay")
+					}
+				end
+			end
+			
+			# Minimum Age
+			while(session.find(:id, "main")['innerHTML'].scan(/id=\"ctl00_MainArea_radajaxpanelConductSalectl00_MainArea_wzrdConductSale_RadAjaxPanelStep4\"/).count > 0)
+				# Waiting for page to load
+			end
+			ma = session.find(:id, "ctl00_MainArea_wzrdConductSale_RadAjaxPanelStep4")['innerHTML'].scan(/Minimum Age.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*/)
+			if(ma.count > 0)
+				id = ma[0].scan(/id=\"ctl00_MainArea_wzrdConductSale_ucRuleSummaries_rptContractGroup_ctl00_rptContract_ctl00_ucRuleSummary_rptRules_ctl\d{2}_imgFailed\"/)[0]
+				if(!if.nil? && !id.empty?)
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short', "Minimum Age tick", "fill in"){
+						session.click_button(id[4..-2])
+					}
+					wait_for_page_to_load(session, config, 'loop_times_short', 'timeout_threshold_short'){
+						session.click_button(id[4..-11] + "btnSaveMinAge")
 					}
 				end
 			end
