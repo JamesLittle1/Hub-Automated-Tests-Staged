@@ -211,7 +211,7 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 		end
 		# Adding wait so we're sure page would have started loading this if authentication needed
 		sleep(2)
-		while(true)
+		for i in 1..config['loop_times_extended']
 			begin
 				if(session.html.scan(/style=\"transform: translate3d\([\d]+\.?[\d]*%/).count > 0)
 					auth = true
@@ -238,9 +238,15 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 					end
 				else
 					next
+					sleep(1)
 				end
 			rescue NoMethodError, Capybara::ElementNotFound
+				if(i == config['loop_times_extended'])
+					puts "HTML output after timeout:"
+					puts session.html # on last attempt print the html output so we can see what's happening
+				end
 				puts "Page still loading"
+				sleep(1)
 			end
 		end
 		
