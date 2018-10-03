@@ -217,10 +217,25 @@ def search_for_meter (session, config, create_new, input1="", input2="", prod)
 					auth = true
 					break
 				elsif(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/).count > 0)
-					auth = false
-					puts "auth failed because of following errors:"
-					puts session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/)
-					break
+					retries = 3
+					if(session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/).scan(/Please save Change of Tenancy details/).count > 0 && retries > 0)
+						puts "Attempting to fix errors:"
+						puts session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/)
+						moved_into_premises(session, config)
+						# retry 3 times
+						case prod
+							when Products.send(:electricity)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_btnGetQuotes").click
+							when Products.send(:gas)
+								session.find(:id, "ctl00_MainArea_wzrdQuoting_rptMPRs_ctl00_ucQuotingMPR_btnGetQuotes").click
+						end
+						retries -= 1
+					else
+						auth = false
+						puts "auth failed because of following errors:"
+						puts session.find(:id, id)['innerHTML'].scan(/Please fix the following error\(s\):.*/)
+						break
+					end
 				else
 					next
 				end
