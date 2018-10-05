@@ -65,6 +65,14 @@ def confirm_quote(session, config, prod)
 		end
 	})
 		puts "Failed to finish #{prod} quote (couldn't click exit on finish tab)"
+		puts "Html for page (to analyse error):"
+		begin
+			session.within_frame(0) do
+				puts session.html
+			end
+		rescue Capybara::ExpectationNotMet
+			puts session.html
+		end
 		return false
 	end
 	retries = 10
